@@ -6,6 +6,8 @@ import { Button } from '../../components/ui/Button';
 import { ImageIcon, SparklesIcon, DownloadIcon, SaveIcon, CopyIcon, Loader2Icon, UploadIcon, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { ImageGeneratorTool, ImageToImageTool, BackgroundRemoverTool, ImageUpscalerTool } from '../../components/content/tools/ImageTools';
+import { ChatWithImageTool, ImageExtenderTool, TextRemoverTool, ObjectRemoverTool, SearchAndReplaceTool } from '../../components/content/tools/ImageToolsPhase2';
+import { ImageMaskEditorTool, ImageTextEditorTool, ThreeDImageGeneratorTool, SketchToImageTool } from '../../components/content/tools/ImageToolsPhase3';
 const ImageToPromptTool = ({
   isGenerating,
   result,
@@ -225,28 +227,47 @@ export const ImageEditor = () => {
     toast.success('Saved to library!');
   };
   const renderToolInterface = () => {
-    const commonProps = {
+    if (!selectedTool) return null;
+    const toolProps = {
       isGenerating,
       result,
       onGenerate: handleGenerate
     };
     switch (selectedTool) {
       case 'image-generator':
-        return <ImageGeneratorTool {...commonProps} />;
+        return <ImageGeneratorTool {...toolProps} />;
       case 'image-to-image':
-        return <ImageToImageTool {...commonProps} />;
+        return <ImageToImageTool {...toolProps} />;
       case 'image-to-prompt':
-        return <ImageToPromptTool {...commonProps} />;
+        return <ImageToPromptTool {...toolProps} />;
       case 'image-variator':
-        return <ImageVariatorTool {...commonProps} />;
+        return <ImageVariatorTool {...toolProps} />;
       case 'image-upscaler':
-        return <ImageUpscalerTool {...commonProps} />;
+        return <ImageUpscalerTool {...toolProps} />;
       case 'background-remover':
-        return <BackgroundRemoverTool {...commonProps} />;
+        return <BackgroundRemoverTool {...toolProps} />;
       case 'background-replacer':
-        return <BackgroundReplacerTool {...commonProps} />;
+        return <BackgroundReplacerTool {...toolProps} />;
       case 'face-swapper':
-        return <FaceSwapperTool {...commonProps} />;
+        return <FaceSwapperTool {...toolProps} />;
+      case 'chat-with-image':
+        return <ChatWithImageTool {...toolProps} />;
+      case 'image-extender':
+        return <ImageExtenderTool {...toolProps} />;
+      case 'text-remover':
+        return <TextRemoverTool {...toolProps} />;
+      case 'object-remover':
+        return <ObjectRemoverTool {...toolProps} />;
+      case 'search-and-replace':
+        return <SearchAndReplaceTool {...toolProps} />;
+      case 'image-mask-editor':
+        return <ImageMaskEditorTool {...toolProps} />;
+      case 'image-text-editor':
+        return <ImageTextEditorTool {...toolProps} />;
+      case '3d-image-generator':
+        return <ThreeDImageGeneratorTool {...toolProps} />;
+      case 'sketch-to-image':
+        return <SketchToImageTool {...toolProps} />;
       default:
         return <div className="text-center py-12">
             <ImageIcon size={48} className="mx-auto text-gray-400 dark:text-gray-600 mb-4" />

@@ -7,6 +7,7 @@ import { MicIcon, SparklesIcon, DownloadIcon, SaveIcon, PlayIcon, PauseIcon, Vol
 import { toast } from 'sonner';
 import { TextToSpeechTool, SpeechToTextTool, MusicGeneratorTool } from '../../components/content/tools/AudioTools';
 import { VoiceChangerTool } from '../../components/content/tools/AudioToolsPhase2';
+import { TextToSoundTool, VoiceDesignTool, VoiceIsolatorTool, VoiceCloningToolEnhanced, AudioTranslatorToolEnhanced } from '../../components/content/tools/AudioToolsPhase2';
 const VoiceCloningTool = ({
   isGenerating,
   result,
@@ -143,24 +144,31 @@ export const AudioEditor = () => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
   const renderToolInterface = () => {
-    const commonProps = {
+    if (!selectedTool) return null;
+    const toolProps = {
       isGenerating,
       result,
       onGenerate: handleGenerate
     };
     switch (selectedTool) {
       case 'text-to-speech':
-        return <TextToSpeechTool {...commonProps} />;
-      case 'speech-to-text':
-        return <SpeechToTextTool {...commonProps} />;
+        return <TextToSpeechTool {...toolProps} />;
       case 'music-generator':
-        return <MusicGeneratorTool {...commonProps} />;
+        return <MusicGeneratorTool {...toolProps} />;
+      case 'speech-to-text':
+        return <SpeechToTextTool {...toolProps} />;
       case 'voice-changer':
-        return <VoiceChangerTool {...commonProps} />;
+        return <VoiceChangerTool {...toolProps} />;
+      case 'text-to-sound':
+        return <TextToSoundTool {...toolProps} />;
+      case 'voice-design':
+        return <VoiceDesignTool {...toolProps} />;
+      case 'voice-isolator':
+        return <VoiceIsolatorTool {...toolProps} />;
       case 'voice-cloning':
-        return <VoiceCloningTool {...commonProps} />;
+        return <VoiceCloningToolEnhanced {...toolProps} />;
       case 'audio-translator':
-        return <AudioTranslatorTool {...commonProps} />;
+        return <AudioTranslatorToolEnhanced {...toolProps} />;
       default:
         return <div className="text-center py-12">
             <MicIcon size={48} className="mx-auto text-gray-400 dark:text-gray-600 mb-4" />

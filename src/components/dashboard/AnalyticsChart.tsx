@@ -1,95 +1,124 @@
-import React from 'react';
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
-export const AnalyticsChart = () => {
+import React, { useState } from 'react';
+import { LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+export const AnalyticsChart: React.FC = () => {
+  const [chartType, setChartType] = useState<'line' | 'area'>('area');
   const data = [{
-    name: 'Jan',
-    views: 4000,
-    engagement: 2400,
-    conversion: 1200
+    date: 'Jan',
+    views: 12500,
+    engagement: 3200,
+    conversions: 850
   }, {
-    name: 'Feb',
-    views: 3000,
-    engagement: 1398,
-    conversion: 800
+    date: 'Feb',
+    views: 15800,
+    engagement: 4100,
+    conversions: 1050
   }, {
-    name: 'Mar',
-    views: 2000,
-    engagement: 9800,
-    conversion: 1800
-  }, {
-    name: 'Apr',
-    views: 2780,
-    engagement: 3908,
-    conversion: 1500
-  }, {
-    name: 'May',
-    views: 1890,
-    engagement: 4800,
-    conversion: 1700
-  }, {
-    name: 'Jun',
-    views: 2390,
+    date: 'Mar',
+    views: 14200,
     engagement: 3800,
-    conversion: 1500
+    conversions: 920
   }, {
-    name: 'Jul',
-    views: 3490,
-    engagement: 4300,
-    conversion: 2100
+    date: 'Apr',
+    views: 18900,
+    engagement: 5200,
+    conversions: 1380
+  }, {
+    date: 'May',
+    views: 21500,
+    engagement: 6100,
+    conversions: 1620
+  }, {
+    date: 'Jun',
+    views: 24800,
+    engagement: 7300,
+    conversions: 1950
   }];
+  const CustomTooltip = ({
+    active,
+    payload,
+    label
+  }: any) => {
+    if (active && payload && payload.length) {
+      return <div className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700">
+          <p className="text-sm font-semibold text-gray-900 dark:text-white mb-2">
+            {label}
+          </p>
+          {payload.map((entry: any, index: number) => <div key={index} className="flex items-center justify-between gap-4 mb-1">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full" style={{
+              backgroundColor: entry.color
+            }} />
+                <span className="text-xs text-gray-600 dark:text-gray-400">
+                  {entry.name}:
+                </span>
+              </div>
+              <span className="text-xs font-semibold text-gray-900 dark:text-white">
+                {entry.value.toLocaleString()}
+              </span>
+            </div>)}
+        </div>;
+    }
+    return null;
+  };
   return <ResponsiveContainer width="100%" height="100%">
-      <AreaChart data={data} margin={{
-      top: 10,
-      right: 10,
-      left: 0,
-      bottom: 0
-    }}>
-        <defs>
-          <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#3FE0A5" stopOpacity={0.8} />
-            <stop offset="95%" stopColor="#3FE0A5" stopOpacity={0} />
-          </linearGradient>
-          <linearGradient id="colorEngagement" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#6366F1" stopOpacity={0.8} />
-            <stop offset="95%" stopColor="#6366F1" stopOpacity={0} />
-          </linearGradient>
-          <linearGradient id="colorConversion" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.8} />
-            <stop offset="95%" stopColor="#F59E0B" stopOpacity={0} />
-          </linearGradient>
-        </defs>
-        <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{
-        fill: '#9CA3AF',
-        fontSize: 12
-      }} />
-        <YAxis axisLine={false} tickLine={false} tick={{
-        fill: '#9CA3AF',
-        fontSize: 12
-      }} />
-        <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(156, 163, 175, 0.2)" />
-        <Tooltip contentStyle={{
-        backgroundColor: '#1A2234',
-        borderColor: 'rgba(255,255,255,0.1)',
-        borderRadius: '0.5rem',
-        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)'
-      }} itemStyle={{
-        color: '#F3F4F6'
-      }} labelStyle={{
-        color: '#F3F4F6',
-        fontWeight: 'bold',
-        marginBottom: '0.5rem'
-      }} />
-        <Legend verticalAlign="top" height={36} wrapperStyle={{
-        paddingTop: '10px'
-      }} formatter={value => <span style={{
-        color: '#9CA3AF',
+      {chartType === 'area' ? <AreaChart data={data}>
+          <defs>
+            <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#3FE0A5" stopOpacity={0.3} />
+              <stop offset="95%" stopColor="#3FE0A5" stopOpacity={0} />
+            </linearGradient>
+            <linearGradient id="colorEngagement" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#8B5CF6" stopOpacity={0.3} />
+              <stop offset="95%" stopColor="#8B5CF6" stopOpacity={0} />
+            </linearGradient>
+            <linearGradient id="colorConversions" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.3} />
+              <stop offset="95%" stopColor="#F59E0B" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.2} />
+          <XAxis dataKey="date" stroke="#9CA3AF" style={{
         fontSize: '12px'
-      }}>
-              {value}
-            </span>} />
-        <Area type="monotone" dataKey="views" stroke="#3FE0A5" fillOpacity={1} fill="url(#colorViews)" strokeWidth={2} />
-        <Area type="monotone" dataKey="engagement" stroke="#6366F1" fillOpacity={1} fill="url(#colorEngagement)" strokeWidth={2} />
-        <Area type="monotone" dataKey="conversion" stroke="#F59E0B" fillOpacity={1} fill="url(#colorConversion)" strokeWidth={2} />
-      </AreaChart>
+      }} />
+          <YAxis stroke="#9CA3AF" style={{
+        fontSize: '12px'
+      }} />
+          <Tooltip content={<CustomTooltip />} />
+          <Legend wrapperStyle={{
+        fontSize: '12px',
+        paddingTop: '20px'
+      }} iconType="circle" />
+          <Area type="monotone" dataKey="views" stroke="#3FE0A5" strokeWidth={2} fillOpacity={1} fill="url(#colorViews)" name="Views" />
+          <Area type="monotone" dataKey="engagement" stroke="#8B5CF6" strokeWidth={2} fillOpacity={1} fill="url(#colorEngagement)" name="Engagement" />
+          <Area type="monotone" dataKey="conversions" stroke="#F59E0B" strokeWidth={2} fillOpacity={1} fill="url(#colorConversions)" name="Conversions" />
+        </AreaChart> : <LineChart data={data}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.2} />
+          <XAxis dataKey="date" stroke="#9CA3AF" style={{
+        fontSize: '12px'
+      }} />
+          <YAxis stroke="#9CA3AF" style={{
+        fontSize: '12px'
+      }} />
+          <Tooltip content={<CustomTooltip />} />
+          <Legend wrapperStyle={{
+        fontSize: '12px',
+        paddingTop: '20px'
+      }} iconType="circle" />
+          <Line type="monotone" dataKey="views" stroke="#3FE0A5" strokeWidth={2} dot={{
+        r: 4
+      }} activeDot={{
+        r: 6
+      }} name="Views" />
+          <Line type="monotone" dataKey="engagement" stroke="#8B5CF6" strokeWidth={2} dot={{
+        r: 4
+      }} activeDot={{
+        r: 6
+      }} name="Engagement" />
+          <Line type="monotone" dataKey="conversions" stroke="#F59E0B" strokeWidth={2} dot={{
+        r: 4
+      }} activeDot={{
+        r: 6
+      }} name="Conversions" />
+        </LineChart>}
     </ResponsiveContainer>;
 };
