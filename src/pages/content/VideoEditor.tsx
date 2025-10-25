@@ -43,10 +43,7 @@ export const VideoEditor = () => {
   return <div className="max-w-6xl mx-auto space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <Link to="/" className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 mb-2">
-            <ChevronLeftIcon size={16} />
-            <span>Back to Dashboard</span>
-          </Link>
+          
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
             Video Generator
           </h1>

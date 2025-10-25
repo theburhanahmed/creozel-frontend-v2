@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { CopyIcon, EditIcon, SendIcon, ArrowRightIcon, CheckIcon, SparklesIcon, VideoIcon, RefreshCwIcon, ChevronLeftIcon, FileTextIcon, ImageIcon, MicIcon } from 'lucide-react';
 import { toast } from 'sonner';
-import { ContentLayout } from '../../components/layout/ContentLayout';
 import { Link } from 'react-router-dom';
 import { CardMenu } from '../../components/ui/Card';
+import { SplitPanelContentCreator } from '../../components/content/SplitPanelContentCreator';
 export const TextEditor = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [contentType, setContentType] = useState('caption');
@@ -22,7 +21,7 @@ export const TextEditor = () => {
     label: 'Tweet / X Post'
   }, {
     value: 'blog',
-    label: 'Blog Post Introduction'
+    label: 'Blog Post'
   }, {
     value: 'script',
     label: 'Video Script'
@@ -41,16 +40,18 @@ export const TextEditor = () => {
     email: "Describe your email content, e.g., 'Monthly newsletter highlighting our top 3 achievements and upcoming events'",
     product: "Describe your product, e.g., 'Wireless noise-cancelling headphones with 20-hour battery life and premium sound quality'"
   };
-  const handleGenerate = () => {
-    if (!prompt.trim()) {
+  const handleGenerate = (userPrompt, options) => {
+    if (!userPrompt.trim()) {
       toast.error('Please enter a prompt first');
       return;
     }
+    setPrompt(userPrompt);
+    setContentType(options.contentSubtype);
     setIsGenerating(true);
     // Simulate API call for text generation
     setTimeout(() => {
       let result = '';
-      switch (contentType) {
+      switch (options.contentSubtype) {
         case 'caption':
           result = `✨ Collaboration at its finest! Our team hard at work in our newly designed office space. The perfect blend of creativity and productivity.\n\nWe believe that great environments foster great ideas. That's why we've invested in creating a space where innovation can thrive.\n\n#TeamWork #OfficeLife #Collaboration #WorkCulture #Innovation`;
           break;
@@ -75,41 +76,79 @@ export const TextEditor = () => {
       setGeneratedText(result);
       setEditableText(result);
       setIsGenerating(false);
+      toast.success('Text generated successfully!');
     }, 2000);
   };
-  const handleCopy = () => {
-    navigator.clipboard.writeText(generatedText);
-    setCopied(true);
-    toast.success('Text copied to clipboard');
-    setTimeout(() => {
-      setCopied(false);
-    }, 2000);
+  const handleSave = () => {
+    toast.success('Content saved successfully', {
+      description: 'Your content has been saved to your library'
+    });
+  };
+  const handleExport = () => {
+    toast.success('Content exported', {
+      description: 'Your content has been exported as a .txt file'
+    });
+  };
+  const handleShare = () => {
+    toast.success('Content ready to share', {
+      description: 'Share link copied to clipboard'
+    });
+    navigator.clipboard.writeText('https://example.com/shared-content');
   };
   const handleEdit = () => {
     setShowEditView(true);
+    setEditableText(generatedText);
   };
-  const handleSaveEdit = () => {
-    setGeneratedText(editableText);
-    setShowEditView(false);
-    toast.success('Changes saved');
+  const renderTextPreview = () => {
+    if (!generatedText) return null;
+    return <div className="p-6 max-h-[500px] overflow-y-auto bg-white dark:bg-[#1A2234]">
+        <div className="prose dark:prose-invert prose-sm max-w-none">
+          {contentType === 'blog' || contentType === 'script' || contentType === 'product' || contentType === 'email' ? generatedText.split('\n\n').map((paragraph, index) => {
+          if (paragraph.startsWith('# ')) {
+            return <h1 key={index} className="text-2xl font-bold mt-0 mb-4 text-gray-900 dark:text-white">
+                      {paragraph.replace('# ', '')}
+                    </h1>;
+          } else if (paragraph.startsWith('## ')) {
+            return <h2 key={index} className="text-xl font-bold mt-6 mb-4 text-gray-900 dark:text-white">
+                      {paragraph.replace('## ', '')}
+                    </h2>;
+          } else if (paragraph.startsWith('- ')) {
+            return <ul key={index} className="list-disc pl-5 my-4 text-gray-700 dark:text-gray-300">
+                      {paragraph.split('\n- ').map((item, i) => <li key={i}>{item.replace('- ', '')}</li>)}
+                    </ul>;
+          } else if (paragraph.includes('**')) {
+            return <p key={index} className="my-4 text-gray-700 dark:text-gray-300">
+                      {paragraph.split('**').map((part, i) => i % 2 === 0 ? part : <strong key={i}>{part}</strong>)}
+                    </p>;
+          } else {
+            return <p key={index} className="my-4 text-gray-700 dark:text-gray-300">
+                      {paragraph}
+                    </p>;
+          }
+        }) : generatedText.split('\n').map((line, index) => <p key={index} className={`${line.startsWith('#') ? 'font-bold' : ''} text-gray-700 dark:text-gray-300`}>
+                  {line}
+                </p>)}
+        </div>
+      </div>;
   };
-  const handleSendToVideo = () => {
-    toast.success('Text sent to Video Tool', {
-      description: 'Your generated content is now available in the Video Generator'
-    });
+  const renderEditTools = () => {
+    return <div>
+        <textarea value={editableText} onChange={e => setEditableText(e.target.value)} className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500" rows={12} />
+        <div className="flex justify-end mt-4 gap-2">
+          <Button variant="outline" onClick={() => setShowEditView(false)} className="border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
+            Cancel
+          </Button>
+          <Button variant="primary" onClick={() => {
+          setGeneratedText(editableText);
+          setShowEditView(false);
+          toast.success('Changes saved');
+        }} leftIcon={<CheckIcon size={14} />} className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700">
+            Save Changes
+          </Button>
+        </div>
+      </div>;
   };
-  const handleRegenerateText = () => {
-    setIsGenerating(true);
-    // Simulate API call for text regeneration
-    setTimeout(() => {
-      // For demonstration purposes, we'll just modify the existing text slightly
-      setGeneratedText(generatedText + '\n\n[This is a regenerated version with some variations]');
-      setEditableText(generatedText + '\n\n[This is a regenerated version with some variations]');
-      setIsGenerating(false);
-      toast.success('Text regenerated with new variations');
-    }, 1500);
-  };
-  return <div className="max-w-6xl mx-auto space-y-6">
+  return <div className="max-w-7xl mx-auto space-y-6">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <Link to="/" className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors duration-200 mb-2">
@@ -144,121 +183,35 @@ export const TextEditor = () => {
         href: '/content/audio'
       }]} className="shadow-md" />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Input Card */}
-        <Card className="h-fit">
-          <div className="p-6 space-y-6">
-            {/* Content Type Selection */}
-            <div>
-              <label htmlFor="content-type" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Content Type
+      <SplitPanelContentCreator type="text" onGenerate={handleGenerate} onSave={handleSave} onExport={handleExport} onShare={handleShare} onEdit={handleEdit} isGenerating={isGenerating} generatedContent={generatedText} editTools={showEditView ? renderEditTools() : null} previewContent={renderTextPreview()} contentSubtypes={contentTypes} defaultSubtype="caption" promptPlaceholder={placeholders[contentType]} generationOptions={<div className="space-y-4">
+            <div className="flex items-center">
+              <input type="checkbox" id="use-brand-voice" className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
+              <label htmlFor="use-brand-voice" className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
+                Use brand voice
               </label>
-              <select id="content-type" value={contentType} onChange={e => setContentType(e.target.value)} className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-green-500">
-                {contentTypes.map(type => <option key={type.value} value={type.value}>
-                    {type.label}
-                  </option>)}
+            </div>
+            <div>
+              <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
+                Tone
+              </label>
+              <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-sm">
+                <option>Professional</option>
+                <option>Casual</option>
+                <option>Friendly</option>
+                <option>Enthusiastic</option>
+                <option>Formal</option>
               </select>
             </div>
-            {/* Prompt Input */}
             <div>
-              <label htmlFor="prompt" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                What would you like to create?
+              <label className="block text-sm text-gray-700 dark:text-gray-300 mb-1">
+                Length
               </label>
-              <textarea id="prompt" value={prompt} onChange={e => setPrompt(e.target.value)} placeholder={placeholders[contentType]} className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-green-500" rows={4} />
+              <select className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-sm">
+                <option>Short</option>
+                <option>Medium</option>
+                <option>Long</option>
+              </select>
             </div>
-            {/* Generate Button */}
-            <Button variant="primary" size="lg" leftIcon={<SparklesIcon size={18} />} onClick={handleGenerate} disabled={isGenerating || !prompt.trim()} className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700">
-              {isGenerating ? <>
-                  <div className="mr-2 animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
-                  Generating...
-                </> : 'Generate Text'}
-            </Button>
-          </div>
-        </Card>
-        {/* Output Card */}
-        <div className="space-y-6">
-          {generatedText && !showEditView ? <Card className="h-full">
-              <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex items-center justify-between">
-                <div className="flex items-center">
-                  <SparklesIcon size={16} className="text-green-500 mr-2" />
-                  <h3 className="font-medium text-gray-900 dark:text-white">
-                    Generated{' '}
-                    {contentTypes.find(t => t.value === contentType)?.label}
-                  </h3>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button variant="ghost" size="sm" leftIcon={<RefreshCwIcon size={14} />} onClick={handleRegenerateText} disabled={isGenerating}>
-                    Regenerate
-                  </Button>
-                  <Button variant="ghost" size="sm" leftIcon={copied ? <CheckIcon size={14} /> : <CopyIcon size={14} />} onClick={handleCopy}>
-                    {copied ? 'Copied' : 'Copy'}
-                  </Button>
-                  <Button variant="ghost" size="sm" leftIcon={<EditIcon size={14} />} onClick={handleEdit}>
-                    Edit
-                  </Button>
-                  <Button variant="outline" size="sm" leftIcon={<VideoIcon size={14} />} onClick={handleSendToVideo}>
-                    Send to Video
-                  </Button>
-                </div>
-              </div>
-              <div className="p-6 max-h-[500px] overflow-y-auto bg-white dark:bg-[#1A2234]">
-                <div className="prose dark:prose-invert prose-sm max-w-none">
-                  {contentType === 'blog' || contentType === 'script' || contentType === 'product' || contentType === 'email' ? generatedText.split('\n\n').map((paragraph, index) => {
-                if (paragraph.startsWith('# ')) {
-                  return <h1 key={index} className="text-2xl font-bold mt-0 mb-4 text-gray-900 dark:text-white">
-                              {paragraph.replace('# ', '')}
-                            </h1>;
-                } else if (paragraph.startsWith('## ')) {
-                  return <h2 key={index} className="text-xl font-bold mt-6 mb-4 text-gray-900 dark:text-white">
-                              {paragraph.replace('## ', '')}
-                            </h2>;
-                } else if (paragraph.startsWith('- ')) {
-                  return <ul key={index} className="list-disc pl-5 my-4 text-gray-700 dark:text-gray-300">
-                              {paragraph.split('\n- ').map((item, i) => <li key={i}>{item.replace('- ', '')}</li>)}
-                            </ul>;
-                } else if (paragraph.includes('**')) {
-                  return <p key={index} className="my-4 text-gray-700 dark:text-gray-300">
-                              {paragraph.split('**').map((part, i) => i % 2 === 0 ? part : <strong key={i}>{part}</strong>)}
-                            </p>;
-                } else {
-                  return <p key={index} className="my-4 text-gray-700 dark:text-gray-300">
-                              {paragraph}
-                            </p>;
-                }
-              }) : generatedText.split('\n').map((line, index) => <p key={index} className={`${line.startsWith('#') ? 'font-bold' : ''} text-gray-700 dark:text-gray-300`}>
-                          {line}
-                        </p>)}
-                </div>
-              </div>
-            </Card> : showEditView ? <Card className="h-full">
-              <div className="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 flex items-center justify-between">
-                <div className="flex items-center">
-                  <EditIcon size={16} className="text-green-500 mr-2" />
-                  <h3 className="font-medium text-gray-900 dark:text-white">
-                    Edit Text
-                  </h3>
-                </div>
-              </div>
-              <div className="p-6">
-                <textarea value={editableText} onChange={e => setEditableText(e.target.value)} className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-green-500" rows={12} />
-                <div className="flex justify-end mt-4 gap-2">
-                  <Button variant="outline" onClick={() => setShowEditView(false)} className="border-gray-300 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300">
-                    Cancel
-                  </Button>
-                  <Button variant="primary" onClick={handleSaveEdit} leftIcon={<CheckIcon size={14} />} className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700">
-                    Save Changes
-                  </Button>
-                </div>
-              </div>
-            </Card> : <Card className="h-full flex items-center justify-center p-6">
-              <div className="text-center">
-                <SparklesIcon size={48} className="mx-auto text-gray-400 mb-4" />
-                <p className="text-gray-500 dark:text-gray-400">
-                  Your generated text will appear here
-                </p>
-              </div>
-            </Card>}
-        </div>
-      </div>
+          </div>} />
     </div>;
 };

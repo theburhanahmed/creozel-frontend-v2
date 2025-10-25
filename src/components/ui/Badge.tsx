@@ -1,15 +1,46 @@
-import React from 'react';
-interface BadgeProps {
-  value: number;
+import React, { forwardRef } from 'react';
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '../../lib/utils';
+const badgeVariants = cva('inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium', {
+  variants: {
+    variant: {
+      default: 'bg-primary text-primary-foreground',
+      secondary: 'bg-secondary text-secondary-foreground',
+      outline: 'text-foreground border border-border',
+      destructive: 'bg-destructive text-destructive-foreground',
+      success: 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400',
+      warning: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-400',
+      info: 'bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-400',
+      muted: 'bg-muted text-muted-foreground'
+    },
+    size: {
+      default: 'text-xs px-2.5 py-0.5',
+      sm: 'text-[0.65rem] px-2 py-0.5',
+      lg: 'text-sm px-3 py-1'
+    }
+  },
+  defaultVariants: {
+    variant: 'default',
+    size: 'default'
+  }
+});
+export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof badgeVariants> {
+  icon?: React.ReactNode;
 }
-export const Badge = ({
-  value
-}: BadgeProps) => {
-  if (value <= 0) return null;
-  return <div className="absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-rose-500 text-white text-[10px] font-medium rounded-full w-5 h-5 flex items-center justify-center shadow-[0_0_10px_rgba(244,63,94,0.6)] transition-all duration-300 hover:shadow-[0_0_15px_rgba(244,63,94,0.8)] animate-pulse-slow" style={{
-    transform: 'translateZ(8px)',
-    transformStyle: 'preserve-3d'
-  }}>
-      {value > 9 ? '9+' : value}
-    </div>;
-};
+export const Badge = forwardRef<HTMLDivElement, BadgeProps>(({
+  className,
+  variant,
+  size,
+  icon,
+  children,
+  ...props
+}, ref) => {
+  return <div ref={ref} className={cn(badgeVariants({
+    variant,
+    size
+  }), className)} {...props}>
+        {icon && <span className="mr-1">{icon}</span>}
+        {children}
+      </div>;
+});
+Badge.displayName = 'Badge';

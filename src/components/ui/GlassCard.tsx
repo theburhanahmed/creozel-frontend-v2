@@ -1,20 +1,41 @@
 import React from 'react';
+import { cn } from '../../lib/utils';
 interface GlassCardProps {
-  title?: string;
-  className?: string;
   children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
 }
-export const GlassCard = ({
-  title,
-  className = '',
-  children
-}: GlassCardProps) => {
-  return <div className={`glass-effect rounded-xl shadow-sm transition-all duration-300 ${className}`}>
-      {title && <div className="px-6 py-4 border-b border-gray-200/30 dark:border-gray-700/30 flex items-center justify-between">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
-            {title}
-          </h3>
-        </div>}
+export const GlassCard: React.FC<GlassCardProps> = ({
+  children,
+  className,
+  onClick
+}) => {
+  return <div className={cn('glass-effect rounded-xl overflow-hidden', 'transition-all duration-300 ease-in-out', onClick && 'cursor-pointer hover:shadow-lg hover:-translate-y-0.5', className)} onClick={onClick}>
       {children}
     </div>;
 };
+export const GlassCardHeader = ({
+  className,
+  children
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) => <div className={cn('px-6 py-4 border-b border-white/[0.05]', className)}>
+    {children}
+  </div>;
+export const GlassCardContent = ({
+  className,
+  children
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) => <div className={cn('px-6 py-4', className)}>{children}</div>;
+export const GlassCardFooter = ({
+  className,
+  children
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) => <div className={cn('px-6 py-4 border-t border-white/[0.05]', className)}>
+    {children}
+  </div>;

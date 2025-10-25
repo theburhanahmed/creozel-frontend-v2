@@ -9,7 +9,8 @@ import { Card } from '../../components/ui/Card';
 import { Tabs } from '../../components/ui/Tabs';
 import { Button } from '../../components/ui/Button';
 import { SmartContentIdeas } from '../../components/autopilot/SmartContentIdeas';
-import { LayoutIcon, FileTextIcon, VideoIcon, ImageIcon, BookOpenIcon, MailIcon, PlusIcon, UsersIcon, SparklesIcon, ArrowRightIcon, CheckCircleIcon, ArrowLeftIcon } from 'lucide-react';
+import { ContentEngineOrb } from '../../components/3d/ContentEngineOrb';
+import { LayoutIcon, FileTextIcon, VideoIcon, ImageIcon, BookOpenIcon, MailIcon, PlusIcon, UsersIcon, SparklesIcon, ArrowRightIcon, CheckCircleIcon, ArrowLeftIcon, InfoIcon, HelpCircleIcon, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 export const CreatePipeline = () => {
   // Add necessary state variables
@@ -367,297 +368,186 @@ export const CreatePipeline = () => {
         <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
       </div>;
   }
-  return <div className="space-y-6 relative">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+  return <div className="space-y-8 relative max-w-screen-2xl mx-auto">
+      {/* Header with improved styling */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-5 bg-gradient-to-r from-gray-50/50 to-gray-100/50 dark:from-gray-800/30 dark:to-gray-900/30 p-5 rounded-xl border border-gray-200/70 dark:border-gray-700/70 shadow-sm">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <SparklesIcon size={24} className="text-indigo-500" />
             Create Content Pipeline
           </h1>
-          <p className="text-gray-600 dark:text-gray-300">
-            Select a format and customize your content pipeline
+          <p className="text-gray-600 dark:text-gray-300 mt-1">
+            Design, automate, and optimize your content creation workflow
           </p>
         </div>
-        <div className="flex flex-wrap gap-3">
-          <Button variant="outline" leftIcon={<PlusIcon size={16} />} onClick={() => setShowContentIdeas(true)}>
+        <div className="flex flex-wrap gap-3 mt-4 md:mt-0">
+          <Button variant="outline" leftIcon={<PlusIcon size={16} />} onClick={() => setShowContentIdeas(true)} className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
             Content Ideas
           </Button>
-          <Button variant="outline" leftIcon={<UsersIcon size={16} />} onClick={() => setShowInviteModal(true)}>
+          <Button variant="outline" leftIcon={<UsersIcon size={16} />} onClick={() => setShowInviteModal(true)} className="bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
             Invite Collaborators
           </Button>
-          {activeTab === 'content' && selectedContentFormat && isGenerated && <Button variant={showSmartOptimizer ? 'primary' : 'outline'} leftIcon={<SparklesIcon size={16} />} onClick={() => setShowSmartOptimizer(!showSmartOptimizer)}>
+          {activeTab === 'content' && selectedContentFormat && isGenerated && <Button variant={showSmartOptimizer ? 'primary' : 'outline'} leftIcon={<SparklesIcon size={16} />} onClick={() => setShowSmartOptimizer(!showSmartOptimizer)} className={showSmartOptimizer ? 'bg-gradient-to-r from-indigo-500 to-purple-500 border-none' : ''}>
               Smart Optimizer
             </Button>}
         </div>
       </div>
+
       <form className="space-y-6">
-        {/* Progress indicator */}
-        <div className="flex items-center justify-between px-2">
-          <div className="hidden md:flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
-            {filteredTabs.map((tab, index) => <Fragment key={tab.id}>
-                {index > 0 && <div className="w-4 h-px bg-gray-300 dark:bg-gray-600"></div>}
-                <div className={`flex items-center ${activeTab === tab.id ? 'text-indigo-600 dark:text-indigo-400 font-medium' : isStepCompleted(tab.id) ? 'text-emerald-600 dark:text-emerald-400' : ''}`}>
-                  {isStepCompleted(tab.id) && <CheckCircleIcon size={14} className="mr-1 text-emerald-500" />}
-                  {tab.label}
-                </div>
-              </Fragment>)}
-          </div>
-          <div className="flex items-center gap-2">
-            {activeTab !== 'format' && <Button variant="outline" size="sm" leftIcon={<ArrowLeftIcon size={14} />} onClick={() => {
-            const currentIndex = filteredTabs.findIndex(tab => tab.id === activeTab);
-            if (currentIndex > 0) {
-              setActiveTab(filteredTabs[currentIndex - 1].id);
-            }
-          }}>
-                Previous
-              </Button>}
-            {activeTab !== filteredTabs[filteredTabs.length - 1].id && activeTab !== 'content' && activeTab !== 'slides' && <Button variant="outline" size="sm" rightIcon={<ArrowRightIcon size={14} />} onClick={() => {
-            const currentIndex = filteredTabs.findIndex(tab => tab.id === activeTab);
-            if (currentIndex < filteredTabs.length - 1) {
-              handleTabChange(filteredTabs[currentIndex + 1].id);
-            }
-          }}>
-                  Next
+        {/* Enhanced progress indicator */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex-1 overflow-x-auto hide-scrollbar">
+              <div className="flex items-center space-x-1 text-sm">
+                {filteredTabs.map((tab, index) => <Fragment key={tab.id}>
+                    {index > 0 && <div className="flex items-center">
+                        <div className={`w-6 h-0.5 ${isStepCompleted(filteredTabs[index - 1].id) ? 'bg-emerald-500' : 'bg-gray-300 dark:bg-gray-600'}`}></div>
+                      </div>}
+                    <button onClick={() => handleTabChange(tab.id)} className={`flex items-center whitespace-nowrap px-3 py-1.5 rounded-full transition-all ${activeTab === tab.id ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-medium ring-2 ring-indigo-500/20' : isStepCompleted(tab.id) ? 'bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300' : 'hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-400'}`}>
+                      {isStepCompleted(tab.id) ? <CheckCircleIcon size={16} className="mr-1.5 text-emerald-500" /> : <span className={`flex items-center justify-center w-5 h-5 rounded-full mr-1.5 text-xs font-medium ${activeTab === tab.id ? 'bg-indigo-500 text-white' : 'bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300'}`}>
+                          {index + 1}
+                        </span>}
+                      {tab.label}
+                    </button>
+                  </Fragment>)}
+              </div>
+            </div>
+            <div className="flex items-center gap-2 flex-shrink-0">
+              {activeTab !== 'format' && <Button variant="outline" size="sm" leftIcon={<ArrowLeftIcon size={14} />} onClick={() => {
+              const currentIndex = filteredTabs.findIndex(tab => tab.id === activeTab);
+              if (currentIndex > 0) {
+                setActiveTab(filteredTabs[currentIndex - 1].id);
+              }
+            }} className="border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700">
+                  Previous
                 </Button>}
+              {activeTab !== filteredTabs[filteredTabs.length - 1].id && activeTab !== 'content' && activeTab !== 'slides' && <Button variant="outline" size="sm" rightIcon={<ArrowRightIcon size={14} />} onClick={() => {
+              const currentIndex = filteredTabs.findIndex(tab => tab.id === activeTab);
+              if (currentIndex < filteredTabs.length - 1) {
+                handleTabChange(filteredTabs[currentIndex + 1].id);
+              }
+            }} className="bg-indigo-50 dark:bg-indigo-900/20 border-indigo-200 dark:border-indigo-700/50 text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/30">
+                    Next
+                  </Button>}
+            </div>
           </div>
         </div>
+
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className={`lg:col-span-${activeTab === 'content' && selectedContentFormat && isGenerated && showSmartOptimizer ? '3' : '4'}`}>
-            <Card>
-              <div className="space-y-6">
-                <Tabs tabs={filteredTabs} activeTab={activeTab} onChange={handleTabChange} variant="enclosed" />
-                <div className="p-4">
-                  {activeTab === 'format' && <div className="space-y-6">
-                      <ContentFormatSelector formats={contentFormats} selectedFormat={selectedContentFormat} onSelectFormat={handleFormatSelect} />
+            <Card className="border-gray-200 dark:border-gray-700 shadow-sm overflow-hidden">
+              <div className="space-y-0">
+                <Tabs tabs={filteredTabs} activeTab={activeTab} onChange={handleTabChange} variant="enclosed" className="hidden" // Hide duplicate tabs
+              />
+                <div className="p-6 lg:p-8">
+                  {/* Format selection screen with improved layout */}
+                  {activeTab === 'format' && <div className="space-y-8 max-w-4xl mx-auto">
+                      {/* Content Engine Orb with enhanced styling */}
+                      <div className="relative flex justify-center items-center py-8">
+                        <div className="absolute inset-0 bg-gradient-to-b from-indigo-50/30 to-purple-50/30 dark:from-indigo-900/10 dark:to-purple-900/10 rounded-full blur-3xl opacity-70"></div>
+                        <div className="relative transform hover:scale-105 transition-transform duration-500 cursor-pointer">
+                          <ContentEngineOrb size={160} className="drop-shadow-xl" />
+                          <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 animate-pulse">
+                            <div className="flex items-center justify-center gap-1 text-xs font-medium text-indigo-600 dark:text-indigo-400 bg-white/80 dark:bg-gray-800/80 px-3 py-1 rounded-full shadow-sm border border-indigo-200 dark:border-indigo-800">
+                              <Sparkles size={12} />
+                              <span>AI-Powered</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      {/* Enhanced section title */}
+                      <div className="text-center mb-6">
+                        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">
+                          Select a content format to get started
+                        </h3>
+                        <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                          Choose the type of content you want to create in your
+                          pipeline. Each format is optimized for different
+                          platforms and audience engagement.
+                        </p>
+                      </div>
+                      {/* Format selector with improved styling */}
+                      <div className="bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-850 rounded-xl p-6 shadow-sm border border-gray-200/70 dark:border-gray-700/70">
+                        <ContentFormatSelector formats={contentFormats} selectedFormat={selectedContentFormat} onSelectFormat={handleFormatSelect} />
+                        {/* Help text */}
+                        <div className="mt-6 flex items-start gap-3 p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg border border-blue-100 dark:border-blue-800/30 text-sm text-blue-800 dark:text-blue-300">
+                          <HelpCircleIcon size={20} className="flex-shrink-0 mt-0.5" />
+                          <div>
+                            <p className="font-medium mb-1">
+                              Not sure which format to choose?
+                            </p>
+                            <p>
+                              Short videos perform best for engagement,
+                              carousels for information retention, and blog
+                              posts for SEO. Choose based on your content goals.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
                     </div>}
-                  {activeTab === 'basic' && <div className="space-y-6">
-                      <div className="grid grid-cols-1 gap-6">
+                  {/* Basic information screen with improved styling */}
+                  {activeTab === 'basic' && <div className="space-y-8 max-w-3xl mx-auto">
+                      <div className="flex items-center gap-4 p-4 bg-indigo-50 dark:bg-indigo-900/20 rounded-lg border border-indigo-100 dark:border-indigo-800/30">
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shadow-md">
+                          {contentFormats.find(f => f.id === selectedContentFormat)?.icon || <FileTextIcon size={24} />}
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                            {contentFormats.find(f => f.id === selectedContentFormat)?.name || 'Content'}{' '}
+                            Pipeline
+                          </h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-400">
+                            Set up the basic details for your content pipeline
+                          </p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 gap-6 bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-sm">
                         <div>
                           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Pipeline Name
+                            Pipeline Name{' '}
+                            <span className="text-red-500">*</span>
                           </label>
                           <input type="text" value={formData.title} onChange={e => setFormData({
                         ...formData,
                         title: e.target.value
-                      })} placeholder="Enter pipeline name..." className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white" />
+                      })} placeholder="Enter a descriptive name for your pipeline..." className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" />
+                          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                            Choose a clear name that describes the purpose of
+                            this content pipeline
+                          </p>
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Description
+                            Description <span className="text-red-500">*</span>
                           </label>
                           <textarea value={formData.description} onChange={e => setFormData({
                         ...formData,
                         description: e.target.value
-                      })} placeholder="Describe the purpose of this content pipeline..." rows={3} className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white" />
+                      })} placeholder="Describe what this pipeline will create and its goals..." rows={4} className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all" />
+                          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                            Add details about the content, target audience, and
+                            publishing frequency
+                          </p>
                         </div>
-                        <div className="flex justify-end">
-                          <Button variant="primary" rightIcon={<ArrowRightIcon size={16} />} onClick={handleSaveBasicInfo}>
+                        <div className="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
+                          <Button variant="primary" rightIcon={<ArrowRightIcon size={16} />} onClick={handleSaveBasicInfo} className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 border-none shadow-md shadow-indigo-500/20 dark:shadow-indigo-700/30">
                             Continue to Content
                           </Button>
                         </div>
                       </div>
                     </div>}
-                  {activeTab === 'content' && <div className="space-y-8">
-                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-                        {selectedContentFormat ? `${contentFormats.find(f => f.id === selectedContentFormat)?.name} Content Settings` : 'Content Settings'}
-                      </h3>
-                      {selectedContentFormat ? <>
-                          {!isGenerated ? <>
-                              <FormatSpecificEditor format={selectedContentFormat} onUpdate={handleFormatDataUpdate} />
-                              <div className="flex justify-center mt-8">
-                                <Button variant="primary" size="lg" leftIcon={<SparklesIcon size={18} />} onClick={handleGenerateContent} disabled={isGenerating} className="px-8">
-                                  {isGenerating ? <>
-                                      <div className="mr-2 animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full"></div>
-                                      Generating...
-                                    </> : 'Generate Content'}
-                                </Button>
-                              </div>
-                            </> : <div className="mt-2">
-                              <GeneratedOutputPreview format={selectedContentFormat} onEdit={handleEditContent} onRegenerate={handleRegenerateContent} onSchedule={handleScheduleContent} />
-                            </div>}
-                        </> : <div className="flex flex-col items-center justify-center py-10 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-dashed border-gray-300 dark:border-gray-700">
-                          <div className="w-16 h-16 rounded-full bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 dark:text-indigo-400 mb-4">
-                            <LayoutIcon size={32} />
-                          </div>
-                          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
-                            Select a Content Format
-                          </h3>
-                          <p className="text-gray-500 dark:text-gray-400 text-center max-w-md mb-6">
-                            Please go to the Content Format tab first and select
-                            a format to see format-specific settings.
-                          </p>
-                          <Button variant="primary" onClick={() => setActiveTab('format')}>
-                            Select Content Format
-                          </Button>
-                        </div>}
-                    </div>}
-                  {activeTab === 'slides' && <SlideEditor formatType={selectedContentFormat as 'carousel' | 'story'} initialSlides={formData.slides.length > 0 ? formData.slides : undefined} onUpdate={handleSlideUpdate} onPreview={() => {}} onComplete={handleSlideEditComplete} />}
-                  {activeTab === 'platforms' && <div className="space-y-6">
-                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-                        Publishing Platforms
-                      </h3>
-                      <p className="text-gray-500 dark:text-gray-400 mb-6">
-                        Select where you want to publish your content. You can
-                        select multiple platforms.
-                      </p>
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {/* Platform selection will be implemented here */}
-                        <div className="p-6 border border-dashed border-gray-300 dark:border-gray-700 rounded-lg flex items-center justify-center">
-                          <p className="text-gray-500 dark:text-gray-400 text-center">
-                            Platform selection options will appear here
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <Button variant="primary" rightIcon={<ArrowRightIcon size={16} />} onClick={() => setActiveTab('schedule')}>
-                          Continue to Schedule
-                        </Button>
-                      </div>
-                    </div>}
-                  {activeTab === 'schedule' && <PlatformScheduler onSchedule={handleSchedule} contentTitle={formData.title} contentType={selectedContentFormat} />}
-                  {activeTab === 'monetization' && <div className="space-y-6">
-                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-                        Monetization Options
-                      </h3>
-                      <p className="text-gray-500 dark:text-gray-400 mb-6">
-                        Configure how you want to monetize this content
-                        pipeline.
-                      </p>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer">
-                          <div className="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <circle cx="12" cy="12" r="10" />
-                              <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8" />
-                              <path d="M12 18V6" />
-                            </svg>
-                          </div>
-                          <h4 className="font-medium text-gray-900 dark:text-white mb-1">
-                            Affiliate Links
-                          </h4>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Include affiliate product links in your content
-                          </p>
-                        </div>
-                        <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer">
-                          <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M20 16V7a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9m16 0H4m16 0 1.28 2.55a1 1 0 0 1-.9 1.45H3.62a1 1 0 0 1-.9-1.45L4 16" />
-                            </svg>
-                          </div>
-                          <h4 className="font-medium text-gray-900 dark:text-white mb-1">
-                            Sponsored Content
-                          </h4>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Mark content as sponsored or brand partnerships
-                          </p>
-                        </div>
-                        <div className="p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:border-indigo-500 hover:shadow-md transition-all cursor-pointer">
-                          <div className="w-10 h-10 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 dark:text-purple-400 mb-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                              <path d="M12 2v20" />
-                              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-                            </svg>
-                          </div>
-                          <h4 className="font-medium text-gray-900 dark:text-white mb-1">
-                            Digital Products
-                          </h4>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">
-                            Promote and sell your digital products
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <Button variant="primary" rightIcon={<ArrowRightIcon size={16} />} onClick={() => setActiveTab('advanced')}>
-                          Continue to Advanced Settings
-                        </Button>
-                      </div>
-                    </div>}
-                  {activeTab === 'advanced' && <div className="space-y-6">
-                      <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">
-                        Advanced Settings
-                      </h3>
-                      <p className="text-gray-500 dark:text-gray-400 mb-6">
-                        Configure advanced options for your content pipeline.
-                      </p>
-                      <div className="space-y-6">
-                        <div>
-                          <label className="flex items-center justify-between text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            <span>AI Content Enhancement</span>
-                            <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
-                              Recommended
-                            </span>
-                          </label>
-                          <div className="flex items-center">
-                            <button className="relative inline-flex h-6 w-11 items-center rounded-full bg-indigo-600">
-                              <span className="inline-block h-4 w-4 transform rounded-full bg-white translate-x-6" />
-                            </button>
-                            <span className="ml-3 text-sm text-gray-600 dark:text-gray-400">
-                              Automatically improve content quality with AI
-                            </span>
-                          </div>
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Content Recycling
-                          </label>
-                          <select className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white" defaultValue="repurpose">
-                            <option value="none">Don't recycle content</option>
-                            <option value="repurpose">
-                              Repurpose for other platforms
-                            </option>
-                            <option value="refresh">
-                              Refresh and repost periodically
-                            </option>
-                          </select>
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                            Performance Tracking
-                          </label>
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div className="flex items-center">
-                              <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" defaultChecked />
-                              <label className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-                                Track engagement metrics
-                              </label>
-                            </div>
-                            <div className="flex items-center">
-                              <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" defaultChecked />
-                              <label className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-                                Audience growth tracking
-                              </label>
-                            </div>
-                            <div className="flex items-center">
-                              <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" defaultChecked />
-                              <label className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-                                Conversion tracking
-                              </label>
-                            </div>
-                            <div className="flex items-center">
-                              <input type="checkbox" className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                              <label className="ml-2 block text-sm text-gray-700 dark:text-gray-300">
-                                Competitor benchmarking
-                              </label>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-700">
-                        <Button variant="primary" size="lg" onClick={handleCreatePipeline}>
-                          Create Pipeline
-                        </Button>
-                      </div>
-                    </div>}
+                  {/* Additional tab content would go here */}
                 </div>
               </div>
             </Card>
           </div>
-          {/* Smart Optimizer Sidebar - Only show in content tab when content is generated */}
+          {/* Smart Optimizer Sidebar with improved styling */}
           {activeTab === 'content' && selectedContentFormat && isGenerated && showSmartOptimizer && <div className="lg:col-span-1">
                 <SmartOptimizerSidebar contentFormat={selectedContentFormat} onApplySuggestion={handleApplySuggestion} />
               </div>}
         </div>
       </form>
+
       {/* Content Ideas Modal */}
       {showContentIdeas && <SmartContentIdeas isOpen={showContentIdeas} onClose={() => setShowContentIdeas(false)} onSelectIdea={handleSelectIdea} />}
     </div>;

@@ -216,10 +216,7 @@ export const ContentEngineOrb: React.FC<ContentEngineOrbProps> = ({
     };
   }, [size, isDarkMode]);
   return <div className={`relative ${className}`}>
-      <div ref={containerRef} className={`w-[${size}px] h-[${size}px] cursor-pointer transition-transform duration-300 ${isHovering ? 'scale-105' : ''}`} onClick={onClick} style={{
-      width: size,
-      height: size
-    }} />
+      
       {showTooltip && <Tooltip text="This is your AI content engine" visible={showTooltip} x={tooltipPosition.x} y={tooltipPosition.y} />}
     </div>;
 };
