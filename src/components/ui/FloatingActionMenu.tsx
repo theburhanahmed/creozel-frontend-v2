@@ -98,8 +98,6 @@ export const FloatingActionMenu: React.FC<FloatingActionMenuProps> = ({
             </Link>)}
         </div>}
       {/* Enhanced main toggle button with improved animations and visual feedback */}
-      <button onClick={() => setIsOpen(!isOpen)} className={cn('w-16 h-16 rounded-full flex items-center justify-center', 'bg-gradient-to-r from-[#3FE0A5] to-[#38B897] text-white', 'shadow-lg hover:shadow-xl transition-all duration-300', 'transform hover:scale-105 active:scale-95', 'focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#3FE0A5]', 'dark:focus:ring-offset-gray-900', isOpen ? 'rotate-45 shadow-[#3FE0A5]/30' : 'animate-pulse-slow shadow-[#3FE0A5]/20 hover:shadow-[#3FE0A5]/30')} aria-expanded={isOpen} aria-label={isOpen ? 'Close action menu' : 'Open action menu'}>
-        {isOpen ? <XIcon size={26} /> : <PlusIcon size={26} />}
-      </button>
+      
     </div>;
 };

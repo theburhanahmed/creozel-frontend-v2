@@ -1,144 +1,372 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, createElement } from 'react';
+import { useLocation } from 'react-router-dom';
+import { ContentToolsSidebar } from '../../components/content/ContentToolsSidebar';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
-import { VideoIcon, UploadIcon, SparklesIcon, PlayIcon, PauseIcon, LoaderIcon, Settings2Icon, ImageIcon, Type as TypeIcon, ChevronLeftIcon } from 'lucide-react';
+import { VideoIcon, SparklesIcon, DownloadIcon, SaveIcon, PlayIcon, PauseIcon, Volume2Icon, VolumeXIcon, MaximizeIcon, SettingsIcon, YoutubeIcon, Loader2Icon } from 'lucide-react';
 import { toast } from 'sonner';
-import { Link } from 'react-router-dom';
-export const VideoEditor = () => {
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [videoUrl, setVideoUrl] = useState<string | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [selectedStyle, setSelectedStyle] = useState('explanatory');
-  const [script, setScript] = useState('');
-  const handleGenerate = () => {
-    if (!script.trim()) {
-      toast.error('Please enter a video script');
-      return;
-    }
-    setIsGenerating(true);
-    // Simulate generation
-    setTimeout(() => {
-      setIsGenerating(false);
-      setVideoUrl('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=60');
-      toast.success('Video generated successfully!');
-    }, 2000);
-  };
-  const videoStyles = [{
-    id: 'explanatory',
-    name: 'Explanatory',
-    icon: TypeIcon
-  }, {
-    id: 'promotional',
-    name: 'Promotional',
-    icon: SparklesIcon
-  }, {
-    id: 'tutorial',
-    name: 'Tutorial',
-    icon: Settings2Icon
-  }, {
-    id: 'social',
-    name: 'Social Media',
-    icon: ImageIcon
-  }];
-  return <div className="max-w-6xl mx-auto space-y-6">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-            Video Generator
-          </h1>
-          <p className="text-gray-600 dark:text-gray-300">
-            Create and edit video content using AI
-          </p>
-        </div>
+import { TextToVideoTool, ImageToVideoTool } from '../../components/content/tools/VideoTools';
+import { YouTubeTranscriberTool, CaptionsGeneratorTool } from '../../components/content/tools/VideoToolsPhase2';
+const YouTubeSummarizerTool = ({
+  isGenerating,
+  result,
+  onGenerate
+}) => <div className="space-y-6">
+    <div className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          YouTube URL
+        </label>
+        <input type="url" placeholder="https://www.youtube.com/watch?v=..." className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-rose-500" />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Input Card */}
-        <Card className="h-fit">
-          <div className="p-6 space-y-6">
-            <div>
-              <label htmlFor="script" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Video Script
-              </label>
-              <textarea id="script" value={script} onChange={e => setScript(e.target.value)} placeholder="Enter your video script..." className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-green-500 focus:border-green-500" rows={4} />
+      <Button variant="primary" size="lg" leftIcon={isGenerating ? <Loader2Icon className="animate-spin" /> : <YoutubeIcon />} onClick={() => onGenerate({
+      url: 'https://www.youtube.com/watch?v=example'
+    })} disabled={isGenerating} className="w-full bg-gradient-to-r from-rose-500 to-red-600 hover:opacity-90">
+        {isGenerating ? 'Summarizing...' : 'Summarize Video'}
+      </Button>
+    </div>
+  </div>;
+const VideoFaceSwapTool = ({
+  isGenerating,
+  result,
+  onGenerate
+}) => <div className="text-center py-12">
+    <VideoIcon size={48} className="mx-auto text-gray-400 dark:text-gray-600 mb-4" />
+    <p className="text-gray-600 dark:text-gray-400">
+      Video Face Swap tool is coming soon
+    </p>
+    <Button variant="outline" className="mt-4" onClick={() => onGenerate({})} disabled={isGenerating}>
+      {isGenerating ? 'Processing...' : 'Try Demo'}
+    </Button>
+  </div>;
+export const VideoEditor = () => {
+  const location = useLocation();
+  const [selectedTool, setSelectedTool] = useState<string | null>(location.state?.selectedTool || 'text-to-video');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [result, setResult] = useState<any>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const handleGenerate = async (data: any) => {
+    setIsGenerating(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 4000));
+      let mockResult;
+      switch (selectedTool) {
+        case 'text-to-video':
+          mockResult = {
+            videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+            thumbnail: 'https://images.unsplash.com/photo-1536240478700-b869070f9279?w=800&auto=format&fit=crop&q=60',
+            prompt: data.prompt,
+            duration: 30,
+            resolution: '1920x1080',
+            fps: 30
+          };
+          break;
+        case 'image-to-video':
+          mockResult = {
+            videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',
+            thumbnail: 'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&auto=format&fit=crop&q=60',
+            duration: 15,
+            resolution: '1920x1080',
+            fps: 24
+          };
+          break;
+        case 'youtube-summarizer':
+          mockResult = {
+            summary: `This video provides a comprehensive overview of AI and machine learning concepts. Key topics covered include:\n\n• Introduction to neural networks and deep learning\n• Practical applications in various industries\n• Future trends and developments in AI\n• Ethical considerations and responsible AI development\n\nThe presenter explains complex concepts in an accessible way, making it suitable for both beginners and intermediate learners.`,
+            keyPoints: ['Neural networks form the foundation of modern AI', 'Deep learning has revolutionized computer vision and NLP', 'AI is being applied across healthcare, finance, and transportation', 'Ethical AI development is crucial for responsible innovation'],
+            duration: 840,
+            videoUrl: data.url
+          };
+          break;
+        case 'youtube-transcriber':
+          mockResult = {
+            transcription: `[00:00] Welcome to this comprehensive guide on artificial intelligence and machine learning.\n\n[00:15] In this video, we'll explore the fundamental concepts that power modern AI systems.\n\n[00:30] Let's start with neural networks, which are the building blocks of deep learning.\n\n[01:00] Neural networks are inspired by the human brain and consist of interconnected nodes.\n\n[01:30] These networks can learn patterns from data and make predictions.`,
+            language: 'English',
+            duration: 840,
+            timestamps: true
+          };
+          break;
+        case 'captions-generator':
+          mockResult = {
+            captions: [{
+              start: 0,
+              end: 3,
+              text: 'Welcome to our video tutorial'
+            }, {
+              start: 3,
+              end: 6,
+              text: 'Today we will learn about AI'
+            }, {
+              start: 6,
+              end: 10,
+              text: 'Artificial Intelligence is transforming industries'
+            }, {
+              start: 10,
+              end: 14,
+              text: 'Let us explore the key concepts together'
+            }],
+            format: 'SRT',
+            language: 'English'
+          };
+          break;
+        case 'video-face-swap':
+          mockResult = {
+            videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+            thumbnail: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=800&auto=format&fit=crop&q=60',
+            duration: 25,
+            resolution: '1920x1080',
+            fps: 30
+          };
+          break;
+        default:
+          mockResult = {
+            videoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+            thumbnail: 'https://images.unsplash.com/photo-1536240478700-b869070f9279?w=800&auto=format&fit=crop&q=60',
+            duration: 30
+          };
+      }
+      setResult(mockResult);
+      setDuration(mockResult.duration || 30);
+      toast.success('Video processed successfully!');
+    } catch (error) {
+      console.error('Generation error:', error);
+      toast.error('Failed to process video');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+  const handleDownload = () => {
+    if (result?.videoUrl) {
+      const a = document.createElement('a');
+      a.href = result.videoUrl;
+      a.download = `${selectedTool}-${Date.now()}.mp4`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      toast.success('Downloaded successfully!');
+    }
+  };
+  const handleSave = () => {
+    toast.success('Saved to library!');
+  };
+  const togglePlayPause = () => {
+    setIsPlaying(!isPlaying);
+  };
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+  };
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+  const renderToolInterface = () => {
+    const commonProps = {
+      isGenerating,
+      result,
+      onGenerate: handleGenerate
+    };
+    switch (selectedTool) {
+      case 'text-to-video':
+        return <TextToVideoTool {...commonProps} />;
+      case 'image-to-video':
+        return <ImageToVideoTool {...commonProps} />;
+      case 'youtube-summarizer':
+        return <YouTubeSummarizerTool {...commonProps} />;
+      case 'youtube-transcriber':
+        return <YouTubeTranscriberTool {...commonProps} />;
+      case 'captions-generator':
+        return <CaptionsGeneratorTool {...commonProps} />;
+      case 'video-face-swap':
+        return <VideoFaceSwapTool {...commonProps} />;
+      default:
+        return <div className="text-center py-12">
+            <VideoIcon size={48} className="mx-auto text-gray-400 dark:text-gray-600 mb-4" />
+            <p className="text-gray-600 dark:text-gray-400">
+              Select a tool from the sidebar to get started
+            </p>
+          </div>;
+    }
+  };
+  const renderResult = () => {
+    if (!result) return null;
+    return <Card className="mt-6">
+        <div className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+              <SparklesIcon size={20} className="text-rose-500" />
+              Generated Result
+            </h3>
+            <div className="flex items-center gap-2">
+              <Button variant="outline" size="sm" leftIcon={<DownloadIcon size={16} />} onClick={handleDownload}>
+                Download
+              </Button>
+              <Button variant="outline" size="sm" leftIcon={<SaveIcon size={16} />} onClick={handleSave}>
+                Save
+              </Button>
             </div>
-            <div className="space-y-4">
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                Video Style
-              </label>
-              <div className="grid grid-cols-2 gap-3">
-                {videoStyles.map(style => {
-                const Icon = style.icon;
-                return <div key={style.id} onClick={() => setSelectedStyle(style.id)} className={`
-                        p-3 border rounded-lg cursor-pointer transition-all
-                        ${selectedStyle === style.id ? 'border-green-500 bg-green-50 dark:bg-green-900/20 ring-2 ring-green-500/50' : 'border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'}
-                      `}>
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center text-white">
-                          <Icon size={14} />
-                        </div>
-                        <div>
-                          <h3 className="text-sm font-medium text-gray-900 dark:text-white">
-                            {style.name}
-                          </h3>
-                          <p className="text-xs text-gray-500 dark:text-gray-400">
-                            Optimized for {style.name.toLowerCase()}
-                          </p>
-                        </div>
-                      </div>
-                    </div>;
-              })}
+          </div>
+          {/* Video Player */}
+          {result.videoUrl && <div className="space-y-4">
+              <div className="relative aspect-video bg-black rounded-lg overflow-hidden">
+                {/* Video Thumbnail/Preview */}
+                <img src={result.thumbnail} alt="Video preview" className="w-full h-full object-cover" />
+                {/* Play Overlay */}
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+                  <button onClick={togglePlayPause} className="w-20 h-20 rounded-full bg-white/90 flex items-center justify-center hover:bg-white transition-all shadow-lg hover:shadow-xl active:scale-95">
+                    {isPlaying ? <PauseIcon size={32} className="text-gray-900" /> : <PlayIcon size={32} className="text-gray-900 ml-1" />}
+                  </button>
+                </div>
+                {/* Video Controls */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                  {/* Progress Bar */}
+                  <div className="mb-3">
+                    <div className="w-full h-1 bg-white/30 rounded-full overflow-hidden">
+                      <div className="h-full bg-rose-500 transition-all duration-300" style={{
+                    width: `${currentTime / duration * 100}%`
+                  }} />
+                    </div>
+                  </div>
+                  {/* Controls */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <button onClick={togglePlayPause} className="text-white hover:text-rose-400 transition-colors">
+                        {isPlaying ? <PauseIcon size={20} /> : <PlayIcon size={20} />}
+                      </button>
+                      <button onClick={toggleMute} className="text-white hover:text-rose-400 transition-colors">
+                        {isMuted ? <VolumeXIcon size={20} /> : <Volume2Icon size={20} />}
+                      </button>
+                      <span className="text-xs text-white font-medium">
+                        {formatTime(currentTime)} / {formatTime(duration)}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <button className="text-white hover:text-rose-400 transition-colors">
+                        <SettingsIcon size={20} />
+                      </button>
+                      <button className="text-white hover:text-rose-400 transition-colors">
+                        <MaximizeIcon size={20} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <Button variant="primary" size="lg" leftIcon={isGenerating ? <LoaderIcon className="animate-spin" /> : <SparklesIcon />} onClick={handleGenerate} disabled={isGenerating || !script.trim()} className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700">
-              {isGenerating ? 'Generating...' : 'Generate Video'}
-            </Button>
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300 dark:border-gray-600" />
+              {/* Video Details */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {result.resolution && <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                      Resolution
+                    </div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">
+                      {result.resolution}
+                    </div>
+                  </div>}
+                {result.fps && <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                      Frame Rate
+                    </div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">
+                      {result.fps} FPS
+                    </div>
+                  </div>}
+                {result.duration && <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+                    <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                      Duration
+                    </div>
+                    <div className="text-sm font-medium text-gray-900 dark:text-white">
+                      {formatTime(result.duration)}
+                    </div>
+                  </div>}
+                <div className="p-3 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    Format
+                  </div>
+                  <div className="text-sm font-medium text-gray-900 dark:text-white">
+                    MP4
+                  </div>
+                </div>
               </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white dark:bg-gray-800 text-gray-500">
-                  or
+            </div>}
+          {/* Summary Result */}
+          {result.summary && <div className="space-y-4">
+              <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+                <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-3">
+                  Video Summary
+                </h4>
+                <p className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-line">
+                  {result.summary}
+                </p>
+              </div>
+              {result.keyPoints && <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+                  <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-3">
+                    Key Points
+                  </h4>
+                  <ul className="space-y-2">
+                    {result.keyPoints.map((point: string, index: number) => <li key={index} className="flex items-start gap-2 text-sm text-gray-700 dark:text-gray-300">
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 flex-shrink-0" />
+                        {point}
+                      </li>)}
+                  </ul>
+                </div>}
+            </div>}
+          {/* Transcription Result */}
+          {result.transcription && <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-sm font-medium text-gray-900 dark:text-white">
+                  Transcription
+                </h4>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {result.language}
                 </span>
               </div>
-            </div>
-            <Button variant="outline" size="lg" leftIcon={<UploadIcon size={18} />} className="w-full">
-              Upload Video
-            </Button>
-          </div>
+              <pre className="text-sm text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap font-sans">
+                {result.transcription}
+              </pre>
+            </div>}
+          {/* Captions Result */}
+          {result.captions && <div className="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-lg border border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-sm font-medium text-gray-900 dark:text-white">
+                  Generated Captions
+                </h4>
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  {result.format} Format
+                </span>
+              </div>
+              <div className="space-y-2 max-h-64 overflow-y-auto">
+                {result.captions.map((caption: any, index: number) => <div key={index} className="p-2 bg-white dark:bg-gray-900/50 rounded border border-gray-200 dark:border-gray-700">
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-medium text-gray-500 dark:text-gray-400">
+                        {formatTime(caption.start)} → {formatTime(caption.end)}
+                      </span>
+                    </div>
+                    <p className="text-sm text-gray-700 dark:text-gray-300">
+                      {caption.text}
+                    </p>
+                  </div>)}
+              </div>
+            </div>}
+        </div>
+      </Card>;
+  };
+  return <div className="flex gap-6 h-[calc(100vh-8rem)]">
+      <ContentToolsSidebar currentCategory="video" selectedTool={selectedTool} onSelectTool={setSelectedTool} />
+      <div className="flex-1 overflow-y-auto">
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            Video Content Tools
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Generate, edit, and analyze video content with AI
+          </p>
+        </div>
+        <Card>
+          <div className="p-6">{renderToolInterface()}</div>
         </Card>
-        {/* Output Card */}
-        <Card className="h-fit">
-          <div className="p-4 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="font-medium text-gray-900 dark:text-white flex items-center gap-2">
-              <VideoIcon size={18} className="text-green-500" />
-              Generated Video
-            </h3>
-          </div>
-          <div className="p-6">
-            <div className="aspect-video rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 flex items-center justify-center bg-gray-50 dark:bg-gray-800/50 overflow-hidden relative">
-              {isGenerating ? <div className="text-center p-6">
-                  <LoaderIcon size={40} className="mx-auto text-green-500 animate-spin mb-4" />
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Generating your video...
-                  </p>
-                </div> : videoUrl ? <>
-                  <img src={videoUrl} alt="Video preview" className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-                    <Button variant="neon" size="lg" className="rounded-full w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-600" onClick={() => setIsPlaying(!isPlaying)}>
-                      {isPlaying ? <PauseIcon size={24} /> : <PlayIcon size={24} />}
-                    </Button>
-                  </div>
-                </> : <div className="text-center p-6">
-                  <VideoIcon size={40} className="mx-auto text-gray-400 mb-4" />
-                  <p className="text-sm text-gray-500 dark:text-gray-400">
-                    Your generated video will appear here
-                  </p>
-                </div>}
-            </div>
-          </div>
-        </Card>
+        {renderResult()}
       </div>
     </div>;
 };

@@ -6,6 +6,8 @@ import { TextEditor } from './pages/content/TextEditor';
 import { ImageEditor } from './pages/content/ImageEditor';
 import { AudioEditor } from './pages/content/AudioEditor';
 import { VideoEditor } from './pages/content/VideoEditor';
+import { ContentLibrary } from './pages/content/ContentLibrary';
+import { ContentHub } from './pages/content/ContentHub';
 import { SocialMedia } from './pages/SocialMedia';
 import { Analytics } from './pages/Analytics';
 import { Calendar } from './pages/Calendar';
@@ -36,6 +38,13 @@ import { FloatingActionMenu } from './components/ui/FloatingActionMenu';
 import { AppProvider, useAppContext } from './context/AppContext';
 import { UserProfile } from './pages/profile/UserProfile';
 import { Notifications } from './pages/notifications/Notifications';
+import { WorkflowDashboard } from './pages/workflow/WorkflowDashboard';
+import { PerformanceAnalytics } from './pages/analytics/PerformanceAnalytics';
+import { ABTestingDashboard } from './pages/analytics/ABTestingDashboard';
+import { AudienceInsights } from './pages/analytics/AudienceInsights';
+import { CollaborationHub } from './pages/collaboration/CollaborationHub';
+import { TeamWorkspace } from './pages/collaboration/TeamWorkspace';
+import { VersionHistory } from './pages/collaboration/VersionHistory';
 // Main application component
 export function App() {
   return <AppProvider>
@@ -68,11 +77,12 @@ function AppContent() {
                           {/* Profile Routes */}
                           <Route path="/profile" element={<UserProfile />} />
                           <Route path="/notifications" element={<Notifications />} />
-                          <Route path="/content" element={<Navigate to="/content/text" replace />} />
+                          <Route path="/content" element={<ContentHub />} />
                           <Route path="/content/text" element={<TextEditor />} />
                           <Route path="/content/image" element={<ImageEditor />} />
                           <Route path="/content/audio" element={<AudioEditor />} />
                           <Route path="/content/video" element={<VideoEditor />} />
+                          <Route path="/content/library" element={<ContentLibrary />} />
                           {/* Autopilot Pipelines Routes */}
                           <Route path="/autopilot" element={<AutopilotDashboard />} />
                           <Route path="/autopilot/create" element={<CreatePipeline />} />
@@ -81,6 +91,16 @@ function AppContent() {
                           <Route path="/autopilot/scheduler" element={<PostScheduler />} />
                           <Route path="/autopilot/media" element={<MediaLibrary />} />
                           <Route path="/autopilot/analytics" element={<EngagementAnalytics />} />
+                          {/* Workflow Routes */}
+                          <Route path="/workflow" element={<WorkflowDashboard />} />
+                          {/* Advanced Analytics Routes */}
+                          <Route path="/analytics/performance" element={<PerformanceAnalytics />} />
+                          <Route path="/analytics/ab-testing" element={<ABTestingDashboard />} />
+                          <Route path="/analytics/audience" element={<AudienceInsights />} />
+                          {/* Collaboration Routes */}
+                          <Route path="/collaboration" element={<CollaborationHub />} />
+                          <Route path="/collaboration/workspace/:id" element={<TeamWorkspace />} />
+                          <Route path="/collaboration/history/:id" element={<VersionHistory />} />
                           {/* Credits Routes */}
                           <Route path="/credits/usage" element={<UsageHistory />} />
                           <Route path="/credits/add" element={<AddCredits />} />

@@ -79,12 +79,5 @@ export const CardMenu = ({
   items,
   className
 }: CardMenuProps) => {
-  return <div className={cn('glass-effect rounded-xl shadow-lg flex items-center justify-center gap-1.5 p-2.5', 'transition-all duration-300 hover:shadow-xl', className)}>
-      {items.map((item, index) => <Link key={index} to={item.href} className={cn('flex flex-col items-center justify-center p-2.5 rounded-lg w-18 h-18', 'text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white', 'hover:bg-gray-100/70 dark:hover:bg-gray-800/70', 'transition-all duration-200 ease-in-out', 'focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800', 'transform hover:scale-105 active:scale-95')} aria-label={item.title}>
-          <span className="w-7 h-7 flex items-center justify-center mb-1.5 text-[#3FE0A5]">
-            {item.icon}
-          </span>
-          <span className="text-xs font-medium">{item.title}</span>
-        </Link>)}
-    </div>;
+  return;
 };

@@ -24,7 +24,6 @@ export const MainNavigation: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
   const sidebarRef = useRef<HTMLDivElement>(null);
-  // Get state and functions from context
   const {
     isDarkMode,
     toggleDarkMode,
@@ -87,65 +86,44 @@ export const MainNavigation: React.FC = () => {
     href: '/'
   }, {
     icon: <PenToolIcon size={18} />,
-    title: 'Content',
-    href: '/content',
-    children: [{
-      icon: <FileTextIcon size={18} />,
-      title: 'Text Editor',
-      href: '/content/text',
-      description: 'Create and edit text-based content'
-    }, {
-      icon: <ImageIcon size={18} />,
-      title: 'Image Editor',
-      href: '/content/image',
-      description: 'Edit and optimize images'
-    }, {
-      icon: <VideoIcon size={18} />,
-      title: 'Video Editor',
-      href: '/content/video',
-      description: 'Create engaging video content'
-    }, {
-      icon: <MicIcon size={18} />,
-      title: 'Audio Editor',
-      href: '/content/audio',
-      description: 'Record and edit audio content'
-    }]
+    title: 'AI Content Tools',
+    href: '/content'
   }, {
     icon: <RocketIcon size={18} />,
     title: 'Autopilot',
     href: '/autopilot',
     children: [{
-      icon: <SparklesIcon size={18} />,
+      icon: <SparklesIcon size={16} />,
       title: 'Dashboard',
       href: '/autopilot',
       description: 'Overview of your content automation'
     }, {
-      icon: <PenToolIcon size={18} />,
+      icon: <PenToolIcon size={16} />,
       title: 'Create Pipeline',
       href: '/autopilot/create',
       description: 'Set up new content automation'
     }, {
-      icon: <VideoIcon size={18} />,
+      icon: <VideoIcon size={16} />,
       title: 'Video Generator',
       href: '/autopilot/video-generator',
       description: 'Automatically generate videos'
     }, {
-      icon: <FileTextIcon size={18} />,
+      icon: <FileTextIcon size={16} />,
       title: 'Custom Templates',
       href: '/autopilot/templates',
       description: 'Manage your content templates'
     }, {
-      icon: <CalendarIcon size={18} />,
+      icon: <CalendarIcon size={16} />,
       title: 'Post Scheduler',
       href: '/autopilot/scheduler',
       description: 'Schedule your content posts'
     }, {
-      icon: <FolderIcon size={18} />,
+      icon: <FolderIcon size={16} />,
       title: 'Media Library',
       href: '/autopilot/media',
       description: 'Manage your media assets'
     }, {
-      icon: <BarChart2Icon size={18} />,
+      icon: <BarChart2Icon size={16} />,
       title: 'Analytics',
       href: '/autopilot/analytics',
       description: 'Track engagement and performance'
@@ -177,79 +155,77 @@ export const MainNavigation: React.FC = () => {
   }];
   // Quick actions
   const quickActions: QuickAction[] = [{
-    icon: <PenToolIcon size={16} />,
+    icon: <PenToolIcon size={18} />,
     title: 'New Content',
     href: '/content',
-    color: 'from-blue-400 to-indigo-500'
+    color: 'from-blue-500 to-indigo-600'
   }, {
-    icon: <RocketIcon size={16} />,
+    icon: <RocketIcon size={18} />,
     title: 'New Pipeline',
     href: '/autopilot/create',
-    color: 'from-purple-400 to-pink-500'
+    color: 'from-purple-500 to-pink-600'
   }, {
-    icon: <DollarSignIcon size={16} />,
+    icon: <DollarSignIcon size={18} />,
     title: 'Affiliate',
     href: '/affiliate',
-    color: 'from-amber-400 to-orange-500'
+    color: 'from-amber-500 to-orange-600'
   }];
   return <>
-      {/* Enhanced Header with improved visual design */}
+      {/* Enhanced Header with improved glass effect */}
       <header className="fixed top-0 left-0 right-0 z-40 transition-all duration-300">
-        <div className="glass-effect mx-4 mt-4 rounded-xl shadow-lg border border-white/20 dark:border-gray-700/30 backdrop-blur-lg">
-          <div className="px-4 py-2.5 flex items-center justify-between">
+        <div className="bg-white/90 dark:bg-gray-900/90 backdrop-blur-2xl mx-4 mt-4 rounded-2xl shadow-2xl border border-gray-200/70 dark:border-gray-700/70 hover:shadow-3xl transition-all duration-300">
+          <div className="px-6 py-4 flex items-center justify-between">
             {/* Logo and Menu Toggle */}
-            <div className="flex items-center">
-              {/* Menu Toggle Button with improved interaction */}
-              <button className="mr-3 w-10 h-10 rounded-lg flex items-center justify-center hover:bg-gray-100/70 dark:hover:bg-gray-800/70 transition-all duration-200 active:scale-95" onClick={() => setIsSidebarOpen(!isSidebarOpen)} aria-expanded={isSidebarOpen} aria-label="Toggle menu">
-                <MenuIcon size={20} className="text-gray-700 dark:text-gray-300" />
+            <div className="flex items-center gap-4">
+              <button className="w-11 h-11 rounded-xl flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 active:scale-95 group" onClick={() => setIsSidebarOpen(!isSidebarOpen)} aria-expanded={isSidebarOpen} aria-label="Toggle menu">
+                <MenuIcon size={22} className="text-gray-700 dark:text-gray-300 group-hover:text-[#3FE0A5] transition-colors duration-200" />
               </button>
-              {/* Enhanced Logo with animation */}
               <Link to="/" className="flex items-center group">
-                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#3FE0A5] to-[#38B897] flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:shadow-[#3FE0A5]/20 transition-all duration-300 group-hover:scale-105">
+                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#3FE0A5] to-[#38B897] flex items-center justify-center text-white font-bold text-xl shadow-xl shadow-[#3FE0A5]/30 group-hover:shadow-2xl group-hover:shadow-[#3FE0A5]/40 transition-all duration-300 group-hover:scale-105">
                   C
                 </div>
-                <h1 className="ml-2.5 text-xl font-semibold bg-gradient-to-r from-[#3FE0A5] to-[#38B897] text-transparent bg-clip-text transition-all duration-300 group-hover:tracking-wide">
+                <h1 className="ml-3 text-xl font-bold bg-gradient-to-r from-[#3FE0A5] to-[#38B897] text-transparent bg-clip-text transition-all duration-300 group-hover:tracking-wide">
                   Creozel
                 </h1>
               </Link>
             </div>
-            {/* Right Side - User Controls with improved spacing and interactions */}
-            <div className="flex items-center space-x-3">
+            {/* Right Side - User Controls */}
+            <div className="flex items-center gap-3">
               {/* Credits */}
               <div className="relative">
-                <button className="flex items-center gap-2 px-3 py-1.5 bg-gray-100/80 dark:bg-gray-800/80 rounded-md hover:bg-gray-200/80 dark:hover:bg-gray-700/80 transition-all duration-200 active:scale-95 shadow-sm" onClick={toggleCreditsMenu} aria-expanded={showCreditsMenu} data-menu-toggle="credits">
-                  <span className="text-sm font-medium text-[#3FE0A5]">
+                <button className="flex items-center gap-2.5 px-5 py-2.5 bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl hover:shadow-lg transition-all duration-200 active:scale-95 border border-gray-200/70 dark:border-gray-600/70 group" onClick={toggleCreditsMenu} aria-expanded={showCreditsMenu} data-menu-toggle="credits">
+                  <span className="text-sm font-semibold text-[#3FE0A5] group-hover:text-[#38B897] transition-colors duration-200">
                     Credits:
                   </span>
-                  <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                  <span className="text-sm font-bold text-gray-900 dark:text-white">
                     {user?.credits || 0}
                   </span>
                 </button>
                 <CreditsMenu />
               </div>
-              {/* Notifications with improved visual indicator */}
+              {/* Notifications */}
               <div className="relative">
-                <button className="relative w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100/70 dark:hover:bg-gray-800/70 transition-all duration-200 active:scale-95" onClick={toggleNotifications} aria-expanded={showNotifications} aria-label="Notifications" data-menu-toggle="notifications">
-                  <BellIcon size={20} className="text-gray-700 dark:text-gray-300" />
-                  <span className="absolute top-2 right-2.5 w-2.5 h-2.5 bg-red-500 rounded-full ring-2 ring-white dark:ring-gray-900 animate-pulse"></span>
+                <button className="relative w-11 h-11 rounded-xl flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 active:scale-95 group" onClick={toggleNotifications} aria-expanded={showNotifications} aria-label="Notifications" data-menu-toggle="notifications">
+                  <BellIcon size={22} className="text-gray-700 dark:text-gray-300 group-hover:text-[#3FE0A5] transition-colors duration-200" />
+                  <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full ring-2 ring-white dark:ring-gray-900 animate-pulse shadow-lg shadow-red-500/50"></span>
                 </button>
                 <NotificationsMenu />
               </div>
-              {/* Messages with improved visual indicator */}
+              {/* Messages */}
               <div className="relative">
-                <button className="relative w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100/70 dark:hover:bg-gray-800/70 transition-all duration-200 active:scale-95" onClick={toggleMailbox} aria-expanded={showMailbox} aria-label="Messages" data-menu-toggle="mailbox">
-                  <MailIcon size={20} className="text-gray-700 dark:text-gray-300" />
-                  <span className="absolute top-2 right-2.5 w-2.5 h-2.5 bg-blue-500 rounded-full ring-2 ring-white dark:ring-gray-900 animate-pulse"></span>
+                <button className="relative w-11 h-11 rounded-xl flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 active:scale-95 group" onClick={toggleMailbox} aria-expanded={showMailbox} aria-label="Messages" data-menu-toggle="mailbox">
+                  <MailIcon size={22} className="text-gray-700 dark:text-gray-300 group-hover:text-[#3FE0A5] transition-colors duration-200" />
+                  <span className="absolute top-2 right-2 w-2.5 h-2.5 bg-blue-500 rounded-full ring-2 ring-white dark:ring-gray-900 animate-pulse shadow-lg shadow-blue-500/50"></span>
                 </button>
                 <MailboxMenu />
               </div>
-              {/* Theme Toggle with improved animation */}
-              <button onClick={toggleDarkMode} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-100/70 dark:hover:bg-gray-800/70 transition-all duration-300 active:scale-95 overflow-hidden" aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
-                {isDarkMode ? <SunIcon size={20} className="text-yellow-400 animate-in fade-in duration-300" /> : <MoonIcon size={20} className="text-gray-700 animate-in fade-in duration-300" />}
+              {/* Theme Toggle */}
+              <button onClick={toggleDarkMode} className="w-11 h-11 rounded-xl flex items-center justify-center hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-300 active:scale-95 overflow-hidden group" aria-label={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
+                {isDarkMode ? <SunIcon size={22} className="text-amber-500 animate-in fade-in duration-300 group-hover:rotate-45 transition-transform duration-300" /> : <MoonIcon size={22} className="text-gray-700 animate-in fade-in duration-300 group-hover:-rotate-12 transition-transform duration-300" />}
               </button>
-              {/* User Profile with improved visual feedback */}
+              {/* User Profile */}
               <div className="relative">
-                <button className="w-10 h-10 rounded-full overflow-hidden border-2 border-white/20 dark:border-gray-700/50 hover:ring-2 hover:ring-[#3FE0A5]/30 transition-all duration-300 active:scale-95" onClick={toggleProfileMenu} aria-expanded={showProfileMenu} aria-label="User menu" data-menu-toggle="profile">
+                <button className="w-11 h-11 rounded-xl overflow-hidden border-2 border-gray-200 dark:border-gray-700 hover:ring-2 hover:ring-[#3FE0A5]/40 hover:border-[#3FE0A5]/60 transition-all duration-300 active:scale-95 shadow-md hover:shadow-lg" onClick={toggleProfileMenu} aria-expanded={showProfileMenu} aria-label="User menu" data-menu-toggle="profile">
                   <img src={user?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&q=80'} alt={`${user?.name || 'User'} avatar`} className="w-full h-full object-cover transition-transform duration-300 hover:scale-110" />
                 </button>
                 <ProfileMenu />
@@ -260,103 +236,104 @@ export const MainNavigation: React.FC = () => {
       </header>
       {/* Sidebar Navigation */}
       <>
-        {/* Enhanced Backdrop with smoother transition */}
-        {isSidebarOpen && <div className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm z-40 animate-in fade-in duration-200" aria-hidden="true" onClick={() => setIsSidebarOpen(false)} />}
-        {/* Enhanced Sidebar with improved animations and visual hierarchy */}
+        {/* Enhanced Backdrop */}
+        {isSidebarOpen && <div className="fixed inset-0 bg-black/60 dark:bg-black/80 backdrop-blur-sm z-40 animate-in fade-in duration-300" aria-hidden="true" onClick={() => setIsSidebarOpen(false)} />}
+        {/* Enhanced Sidebar */}
         <FocusTrap isActive={isSidebarOpen} onEscape={() => setIsSidebarOpen(false)}>
-          <div ref={sidebarRef} className={cn('fixed top-0 left-0 bottom-0 z-50 w-full sm:w-80 glass-effect border-r border-white/20 dark:border-gray-700/30 shadow-xl transform transition-all duration-300 ease-out overflow-y-auto', isSidebarOpen ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0 sm:opacity-100')} role="dialog" aria-modal="true" aria-label="Navigation">
-            {/* Sidebar Header with improved visual design */}
-            <div className="flex items-center justify-between p-4 border-b border-gray-200/10 dark:border-gray-700/30">
+          <div ref={sidebarRef} className={cn('fixed top-0 left-0 bottom-0 z-50 w-full sm:w-96 bg-white/95 dark:bg-gray-900/95 backdrop-blur-2xl border-r border-gray-200/70 dark:border-gray-800/70 shadow-2xl transform transition-all duration-300 ease-out overflow-y-auto', isSidebarOpen ? 'translate-x-0 opacity-100' : '-translate-x-full opacity-0 sm:opacity-100')} role="dialog" aria-modal="true" aria-label="Navigation">
+            {/* Sidebar Header */}
+            <div className="flex items-center justify-between p-6 border-b border-gray-200/70 dark:border-gray-800/70 bg-gradient-to-r from-gray-50/50 to-transparent dark:from-gray-800/30">
               <Link to="/" className="flex items-center group" onClick={() => setIsSidebarOpen(false)}>
-                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#3FE0A5] to-[#38B897] flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:shadow-[#3FE0A5]/20 transition-all duration-300 group-hover:scale-105">
+                <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#3FE0A5] to-[#38B897] flex items-center justify-center text-white font-bold text-xl shadow-xl shadow-[#3FE0A5]/30 group-hover:shadow-2xl group-hover:shadow-[#3FE0A5]/40 transition-all duration-300 group-hover:scale-105">
                   C
                 </div>
-                <h2 className="ml-2.5 text-xl font-semibold bg-gradient-to-r from-[#3FE0A5] to-[#38B897] text-transparent bg-clip-text transition-all duration-300 group-hover:tracking-wide">
+                <h2 className="ml-3 text-xl font-bold bg-gradient-to-r from-[#3FE0A5] to-[#38B897] text-transparent bg-clip-text transition-all duration-300 group-hover:tracking-wide">
                   Creozel
                 </h2>
               </Link>
-              <button onClick={() => setIsSidebarOpen(false)} className="p-2 rounded-full hover:bg-gray-200/20 dark:hover:bg-gray-800/20 transition-all duration-200 active:scale-95" aria-label="Close menu">
-                <XIcon size={20} className="text-gray-700 dark:text-gray-300" />
+              <button onClick={() => setIsSidebarOpen(false)} className="p-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 active:scale-95 group" aria-label="Close menu">
+                <XIcon size={22} className="text-gray-700 dark:text-gray-300 group-hover:text-red-500 transition-colors duration-200" />
               </button>
             </div>
-            {/* Sidebar Content with improved spacing and visual hierarchy */}
-            <div className="p-4 sidebar-scroll overflow-y-auto max-h-[calc(100vh-4rem)]">
-              {/* Quick Actions with improved visual design */}
-              <div className="mb-7">
-                <h3 className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 font-medium pl-1">
+            {/* Sidebar Content */}
+            <div className="p-6 sidebar-scroll overflow-y-auto max-h-[calc(100vh-6rem)]">
+              {/* Quick Actions */}
+              <div className="mb-8">
+                <h3 className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4 font-bold px-2">
                   Quick Actions
                 </h3>
-                <div className="flex flex-wrap gap-3">
-                  {quickActions.map(action => <Link key={action.title} to={action.href} className="flex items-center gap-2.5 px-3.5 py-2.5 bg-white/10 dark:bg-gray-800/30 rounded-lg hover:bg-white/20 dark:hover:bg-gray-800/50 transition-all duration-200 hover:shadow-md active:scale-95" onClick={() => {
+                <div className="grid grid-cols-1 gap-3">
+                  {quickActions.map(action => <Link key={action.title} to={action.href} className="flex items-center gap-3 px-5 py-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] border border-gray-200/70 dark:border-gray-600/70 group" onClick={() => {
                   if (action.onClick) action.onClick();
                   setIsSidebarOpen(false);
                 }}>
-                      <div className={cn('w-7 h-7 rounded-full flex items-center justify-center bg-gradient-to-r', action.color || 'from-[#3FE0A5] to-[#38B897]', 'text-white shadow-sm')}>
+                      <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center bg-gradient-to-r shadow-lg', action.color || 'from-[#3FE0A5] to-[#38B897]', 'text-white group-hover:scale-110 transition-transform duration-300')}>
                         {action.icon}
                       </div>
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                      <span className="text-sm font-semibold text-gray-900 dark:text-white group-hover:text-[#3FE0A5] transition-colors duration-200">
                         {action.title}
                       </span>
                     </Link>)}
                 </div>
               </div>
-              {/* Main Navigation with improved visual hierarchy and animations */}
-              <nav className="space-y-1">
-                <h3 className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 font-medium pl-1">
+              {/* Main Navigation */}
+              <nav className="space-y-2">
+                <h3 className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4 font-bold px-2">
                   Main Navigation
                 </h3>
-                {navigationItems.map(item => <div key={item.href} className="mb-1.5">
+                {navigationItems.map(item => <div key={item.href} className="mb-1">
                     {item.children ? <div>
-                        <button onClick={() => toggleExpanded(item.title)} className={cn('flex items-center justify-between w-full px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200', isActive(item.href) ? 'text-[#3FE0A5] bg-[#3FE0A5]/10 shadow-sm' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 hover:shadow-sm')} aria-expanded={expandedItems.includes(item.title)}>
-                          <div className="flex items-center">
-                            <span className="mr-3 opacity-80">{item.icon}</span>
+                        <button onClick={() => toggleExpanded(item.title)} className={cn('flex items-center justify-between w-full px-5 py-3.5 rounded-xl text-sm font-semibold transition-all duration-200', isActive(item.href) ? 'text-white bg-gradient-to-r from-[#3FE0A5] to-[#38B897] shadow-xl shadow-[#3FE0A5]/30' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:shadow-lg')} aria-expanded={expandedItems.includes(item.title)}>
+                          <div className="flex items-center gap-3">
+                            <span>{item.icon}</span>
                             {item.title}
                           </div>
-                          <ChevronRightIcon size={16} className={cn('transition-transform duration-300', expandedItems.includes(item.title) ? 'rotate-90' : '')} />
+                          <ChevronRightIcon size={18} className={cn('transition-transform duration-300', expandedItems.includes(item.title) ? 'rotate-90' : '')} />
                         </button>
-                        {/* Dropdown Items with improved animation and visual design */}
-                        {expandedItems.includes(item.title) && <div className="mt-1.5 ml-6 pl-4 border-l border-gray-200/20 dark:border-gray-700/30 space-y-1.5 animate-in fade-in slide-in-from-left-1 duration-200">
-                            {item.children.map(child => <Link key={child.href} to={child.href} className={cn('flex items-center px-3.5 py-2.5 rounded-lg text-sm transition-all duration-200', isActive(child.href) ? 'text-[#3FE0A5] bg-[#3FE0A5]/10 shadow-sm' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 hover:shadow-sm')} onClick={() => setIsSidebarOpen(false)}>
-                                <span className="mr-2.5 opacity-80">
+                        {expandedItems.includes(item.title) && <div className="mt-2 ml-10 pl-5 border-l-2 border-gray-200 dark:border-gray-700 space-y-1 animate-in fade-in slide-in-from-left-2 duration-300">
+                            {item.children.map(child => <Link key={child.href} to={child.href} className={cn('flex items-start gap-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 group', isActive(child.href) ? 'text-[#3FE0A5] bg-[#3FE0A5]/10 font-semibold shadow-md' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:shadow-md')} onClick={() => setIsSidebarOpen(false)}>
+                                <span className="opacity-80 group-hover:opacity-100 transition-opacity duration-200 mt-0.5">
                                   {child.icon}
                                 </span>
-                                <div>
-                                  <div>{child.title}</div>
-                                  {child.description && <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5 max-w-[200px]">
+                                <div className="flex-1">
+                                  <div className="font-medium group-hover:text-[#3FE0A5] transition-colors duration-200">
+                                    {child.title}
+                                  </div>
+                                  {child.description && <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
                                       {child.description}
                                     </p>}
                                 </div>
                               </Link>)}
                           </div>}
-                      </div> : <Link to={item.href} className={cn('flex items-center px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all duration-200', isActive(item.href) ? 'text-[#3FE0A5] bg-[#3FE0A5]/10 shadow-sm' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 hover:shadow-sm')} onClick={() => setIsSidebarOpen(false)}>
-                        <span className="mr-3 opacity-80">{item.icon}</span>
+                      </div> : <Link to={item.href} className={cn('flex items-center gap-3 px-5 py-3.5 rounded-xl text-sm font-semibold transition-all duration-200', isActive(item.href) ? 'text-white bg-gradient-to-r from-[#3FE0A5] to-[#38B897] shadow-xl shadow-[#3FE0A5]/30' : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 hover:shadow-lg')} onClick={() => setIsSidebarOpen(false)}>
+                        <span>{item.icon}</span>
                         {item.title}
                       </Link>}
                   </div>)}
               </nav>
-              {/* Settings and Help with improved visual separation */}
-              <div className="mt-7 pt-6 border-t border-gray-200/10 dark:border-gray-700/30">
-                <h3 className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 font-medium pl-1">
+              {/* Settings and Help */}
+              <div className="mt-8 pt-6 border-t border-gray-200/70 dark:border-gray-800/70">
+                <h3 className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-4 font-bold px-2">
                   Support
                 </h3>
-                <Link to="/settings" className="flex items-center px-3.5 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all duration-200 hover:shadow-sm mb-1.5" onClick={() => setIsSidebarOpen(false)}>
-                  <SettingsIcon size={18} className="mr-3 opacity-80" />
+                <Link to="/settings" className="flex items-center gap-3 px-5 py-3.5 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 hover:shadow-lg mb-2" onClick={() => setIsSidebarOpen(false)}>
+                  <SettingsIcon size={18} />
                   Settings
                 </Link>
-                <Link to="/help" className="flex items-center px-3.5 py-2.5 rounded-lg text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100/50 dark:hover:bg-gray-800/50 transition-all duration-200 hover:shadow-sm" onClick={() => setIsSidebarOpen(false)}>
-                  <HelpCircleIcon size={18} className="mr-3 opacity-80" />
+                <Link to="/help" className="flex items-center gap-3 px-5 py-3.5 rounded-xl text-sm font-semibold text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all duration-200 hover:shadow-lg" onClick={() => setIsSidebarOpen(false)}>
+                  <HelpCircleIcon size={18} />
                   Help & Support
                 </Link>
               </div>
-              {/* User Info with improved visual design */}
-              <div className="mt-7 pt-6 border-t border-gray-200/10 dark:border-gray-700/30">
-                <div className="flex items-center p-3.5 bg-white/10 dark:bg-gray-800/30 rounded-lg">
-                  <img src={user?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&q=80'} alt={`${user?.name || 'User'} avatar`} className="w-11 h-11 rounded-full object-cover border-2 border-white/20 dark:border-gray-700/50 shadow-md" />
-                  <div className="ml-3.5">
-                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+              {/* User Info */}
+              <div className="mt-8 pt-6 border-t border-gray-200/70 dark:border-gray-800/70">
+                <div className="flex items-center p-5 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700 rounded-xl border border-gray-200/70 dark:border-gray-600/70 shadow-lg hover:shadow-xl transition-all duration-300">
+                  <img src={user?.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=100&q=80'} alt={`${user?.name || 'User'} avatar`} className="w-14 h-14 rounded-xl object-cover border-2 border-white dark:border-gray-600 shadow-lg" />
+                  <div className="ml-4 flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">
                       {user?.name || 'User'}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
+                    <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                       @{user?.username || 'username'}
                     </p>
                   </div>
