@@ -3,6 +3,10 @@ import { useLocation } from 'react-router-dom'
 import { ContentToolsSidebar } from '../../components/content/ContentToolsSidebar'
 import { Card } from '../../components/ui/Card'
 import { Button } from '../../components/ui/Button'
+import { FileUpload } from '../../components/ui/FileUpload'
+import { FormInput } from '../../components/ui/FormInput'
+import { FormTextarea } from '../../components/ui/FormTextarea'
+import { FormSelect } from '../../components/ui/FormSelect'
 import {
   VideoIcon,
   SparklesIcon,
@@ -86,6 +90,172 @@ const VideoFaceSwapTool = ({ isGenerating, result, onGenerate }) => (
     </Button>
   </div>
 )
+const VideoGeneratorTool = ({ isGenerating, result, onGenerate }) => {
+  const [prompt, setPrompt] = useState('')
+  const [duration, setDuration] = useState('5')
+  const [style, setStyle] = useState('realistic')
+  const durationOptions = [
+    { value: '3', label: '3 seconds' },
+    { value: '5', label: '5 seconds' },
+    { value: '10', label: '10 seconds' },
+  ]
+  const styleOptions = [
+    { value: 'realistic', label: 'Realistic' },
+    { value: 'animated', label: 'Animated' },
+    { value: 'cinematic', label: 'Cinematic' },
+    { value: 'artistic', label: 'Artistic' },
+  ]
+  return (
+    <div className="space-y-6">
+      <FormTextarea
+        label="Video Description"
+        placeholder="Describe the video you want to generate..."
+        rows={5}
+        value={prompt}
+        onChange={(e) => setPrompt(e.target.value)}
+        showCharCount
+        maxLength={500}
+        helperText="Be specific about the scene, actions, and style"
+        required
+      />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <FormSelect
+          label="Duration"
+          value={duration}
+          onChange={(e) => setDuration(e.target.value)}
+          options={durationOptions}
+          helperText="Video length"
+        />
+        <FormSelect
+          label="Style"
+          value={style}
+          onChange={(e) => setStyle(e.target.value)}
+          options={styleOptions}
+          helperText="Visual style"
+        />
+      </div>
+      <Button
+        variant="primary"
+        size="lg"
+        leftIcon={
+          isGenerating ? (
+            <Loader2Icon className="animate-spin" />
+          ) : (
+            <SparklesIcon />
+          )
+        }
+        onClick={() => onGenerate({ prompt, duration, style })}
+        disabled={isGenerating || !prompt.trim()}
+        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+      >
+        {isGenerating ? 'Generating...' : 'Generate Video'}
+      </Button>
+    </div>
+  )
+}
+const ImageToVideoTool = ({ isGenerating, result, onGenerate }) => {
+  const [file, setFile] = useState<File | null>(null)
+  const [motion, setMotion] = useState('medium')
+  const [duration, setDuration] = useState('5')
+  const motionOptions = [
+    { value: 'low', label: 'Low Motion' },
+    { value: 'medium', label: 'Medium Motion' },
+    { value: 'high', label: 'High Motion' },
+  ]
+  const durationOptions = [
+    { value: '3', label: '3 seconds' },
+    { value: '5', label: '5 seconds' },
+    { value: '10', label: '10 seconds' },
+  ]
+  return (
+    <div className="space-y-6">
+      <FileUpload
+        label="Upload Image"
+        accept="image/*"
+        maxSize={10}
+        onFileSelect={setFile}
+        helperText="PNG, JPG, WEBP up to 10MB"
+      />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <FormSelect
+          label="Motion Intensity"
+          value={motion}
+          onChange={(e) => setMotion(e.target.value)}
+          options={motionOptions}
+          helperText="Amount of movement"
+        />
+        <FormSelect
+          label="Duration"
+          value={duration}
+          onChange={(e) => setDuration(e.target.value)}
+          options={durationOptions}
+          helperText="Video length"
+        />
+      </div>
+      <Button
+        variant="primary"
+        size="lg"
+        leftIcon={
+          isGenerating ? (
+            <Loader2Icon className="animate-spin" />
+          ) : (
+            <SparklesIcon />
+          )
+        }
+        onClick={() => onGenerate({ motion, duration })}
+        disabled={isGenerating || !file}
+        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+      >
+        {isGenerating ? 'Creating Video...' : 'Create Video'}
+      </Button>
+    </div>
+  )
+}
+const VideoEditorTool = ({ isGenerating, result, onGenerate }) => {
+  const [file, setFile] = useState<File | null>(null)
+  const [editType, setEditType] = useState('trim')
+  const editOptions = [
+    { value: 'trim', label: 'Trim Video' },
+    { value: 'crop', label: 'Crop Video' },
+    { value: 'speed', label: 'Change Speed' },
+    { value: 'filter', label: 'Apply Filter' },
+    { value: 'subtitle', label: 'Add Subtitles' },
+  ]
+  return (
+    <div className="space-y-6">
+      <FileUpload
+        label="Upload Video"
+        accept="video/*"
+        maxSize={100}
+        onFileSelect={setFile}
+        helperText="MP4, MOV, AVI up to 100MB"
+      />
+      <FormSelect
+        label="Edit Type"
+        value={editType}
+        onChange={(e) => setEditType(e.target.value)}
+        options={editOptions}
+        helperText="Choose the type of edit"
+      />
+      <Button
+        variant="primary"
+        size="lg"
+        leftIcon={
+          isGenerating ? (
+            <Loader2Icon className="animate-spin" />
+          ) : (
+            <SparklesIcon />
+          )
+        }
+        onClick={() => onGenerate({ editType })}
+        disabled={isGenerating || !file}
+        className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
+      >
+        {isGenerating ? 'Processing...' : 'Edit Video'}
+      </Button>
+    </div>
+  )
+}
 export const VideoEditor = () => {
   const location = useLocation()
   const [selectedTool, setSelectedTool] = useState<string | null>(

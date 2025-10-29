@@ -3,131 +3,81 @@ import { useLocation } from 'react-router-dom';
 import { ContentToolsSidebar } from '../../components/content/ContentToolsSidebar';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
-import { ImageIcon, SparklesIcon, DownloadIcon, SaveIcon, CopyIcon, Loader2Icon, UploadIcon, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
+import { ImageIcon, SparklesIcon, DownloadIcon, SaveIcon, CopyIcon, Loader2Icon, ZoomInIcon, ZoomOutIcon } from 'lucide-react';
 import { toast } from 'sonner';
 import { ImageGeneratorTool, ImageToImageTool, BackgroundRemoverTool, ImageUpscalerTool } from '../../components/content/tools/ImageTools';
 import { ChatWithImageTool, ImageExtenderTool, TextRemoverTool, ObjectRemoverTool, SearchAndReplaceTool } from '../../components/content/tools/ImageToolsPhase2';
 import { ImageMaskEditorTool, ImageTextEditorTool, ThreeDImageGeneratorTool, SketchToImageTool } from '../../components/content/tools/ImageToolsPhase3';
+import { FileUpload } from '../../components/ui/FileUpload';
+import { FormInput } from '../../components/ui/FormInput';
+import { FormTextarea } from '../../components/ui/FormTextarea';
+import { FormSelect } from '../../components/ui/FormSelect';
 const ImageToPromptTool = ({
   isGenerating,
   result,
   onGenerate
-}) => <div className="space-y-6">
-    <div className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Upload Image
-        </label>
-        <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-purple-500 dark:hover:border-purple-400 transition-colors cursor-pointer">
-          <UploadIcon size={48} className="mx-auto text-gray-400 dark:text-gray-500 mb-4" />
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Click to upload or drag and drop
-          </p>
-          <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
-            PNG, JPG, WEBP up to 10MB
-          </p>
-        </div>
-      </div>
+}) => {
+  const [file, setFile] = useState<File | null>(null);
+  return <div className="space-y-6">
+      <FileUpload label="Upload Image" accept="image/*" maxSize={10} onFileSelect={setFile} helperText="PNG, JPG, WEBP up to 10MB" />
       <Button variant="primary" size="lg" leftIcon={isGenerating ? <Loader2Icon className="animate-spin" /> : <SparklesIcon />} onClick={() => onGenerate({
       imageUrl: 'sample.jpg'
-    })} disabled={isGenerating} className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90">
+    })} disabled={isGenerating || !file} className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">
         {isGenerating ? 'Analyzing...' : 'Generate Prompt'}
       </Button>
-    </div>
-  </div>;
+    </div>;
+};
 const ImageVariatorTool = ({
   isGenerating,
   result,
   onGenerate
-}) => <div className="space-y-6">
-    <div className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Upload Image
-        </label>
-        <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-purple-500 dark:hover:border-purple-400 transition-colors cursor-pointer">
-          <UploadIcon size={48} className="mx-auto text-gray-400 dark:text-gray-500 mb-4" />
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Click to upload or drag and drop
-          </p>
-        </div>
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Number of Variations
-        </label>
-        <input type="number" min="1" max="4" defaultValue={2} className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white" />
-      </div>
+}) => {
+  const [file, setFile] = useState<File | null>(null);
+  const [variations, setVariations] = useState('2');
+  return <div className="space-y-6">
+      <FileUpload label="Upload Image" accept="image/*" maxSize={10} onFileSelect={setFile} helperText="PNG, JPG, WEBP up to 10MB" />
+      <FormInput type="number" label="Number of Variations" min="1" max="4" value={variations} onChange={e => setVariations(e.target.value)} helperText="Generate 1-4 variations" />
       <Button variant="primary" size="lg" leftIcon={isGenerating ? <Loader2Icon className="animate-spin" /> : <SparklesIcon />} onClick={() => onGenerate({
-      variations: 2
-    })} disabled={isGenerating} className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90">
+      variations: parseInt(variations)
+    })} disabled={isGenerating || !file} className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">
         {isGenerating ? 'Generating...' : 'Create Variations'}
       </Button>
-    </div>
-  </div>;
+    </div>;
+};
 const BackgroundReplacerTool = ({
   isGenerating,
   result,
   onGenerate
-}) => <div className="space-y-6">
-    <div className="space-y-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Upload Image
-        </label>
-        <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-purple-500 dark:hover:border-purple-400 transition-colors cursor-pointer">
-          <UploadIcon size={48} className="mx-auto text-gray-400 dark:text-gray-500 mb-4" />
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Click to upload or drag and drop
-          </p>
-        </div>
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          New Background Description
-        </label>
-        <textarea placeholder="Describe the new background..." rows={3} className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none" />
-      </div>
+}) => {
+  const [file, setFile] = useState<File | null>(null);
+  const [description, setDescription] = useState('');
+  return <div className="space-y-6">
+      <FileUpload label="Upload Image" accept="image/*" maxSize={10} onFileSelect={setFile} helperText="PNG, JPG, WEBP up to 10MB" />
+      <FormTextarea label="New Background Description" placeholder="Describe the new background..." rows={3} value={description} onChange={e => setDescription(e.target.value)} showCharCount maxLength={500} />
       <Button variant="primary" size="lg" leftIcon={isGenerating ? <Loader2Icon className="animate-spin" /> : <SparklesIcon />} onClick={() => onGenerate({
-      background: 'new background'
-    })} disabled={isGenerating} className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90">
+      background: description
+    })} disabled={isGenerating || !file || !description.trim()} className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">
         {isGenerating ? 'Processing...' : 'Replace Background'}
       </Button>
-    </div>
-  </div>;
+    </div>;
+};
 const FaceSwapperTool = ({
   isGenerating,
   result,
   onGenerate
-}) => <div className="space-y-6">
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Source Image
-        </label>
-        <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-purple-500 dark:hover:border-purple-400 transition-colors cursor-pointer">
-          <UploadIcon size={32} className="mx-auto text-gray-400 dark:text-gray-500 mb-2" />
-          <p className="text-xs text-gray-600 dark:text-gray-400">
-            Upload source face
-          </p>
-        </div>
+}) => {
+  const [sourceFile, setSourceFile] = useState<File | null>(null);
+  const [targetFile, setTargetFile] = useState<File | null>(null);
+  return <div className="space-y-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <FileUpload label="Source Image" accept="image/*" maxSize={10} onFileSelect={setSourceFile} helperText="Upload source face" />
+        <FileUpload label="Target Image" accept="image/*" maxSize={10} onFileSelect={setTargetFile} helperText="Upload target image" />
       </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-          Target Image
-        </label>
-        <div className="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center hover:border-purple-500 dark:hover:border-purple-400 transition-colors cursor-pointer">
-          <UploadIcon size={32} className="mx-auto text-gray-400 dark:text-gray-500 mb-2" />
-          <p className="text-xs text-gray-600 dark:text-gray-400">
-            Upload target image
-          </p>
-        </div>
-      </div>
-    </div>
-    <Button variant="primary" size="lg" leftIcon={isGenerating ? <Loader2Icon className="animate-spin" /> : <SparklesIcon />} onClick={() => onGenerate({})} disabled={isGenerating} className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90">
-      {isGenerating ? 'Swapping...' : 'Swap Faces'}
-    </Button>
-  </div>;
+      <Button variant="primary" size="lg" leftIcon={isGenerating ? <Loader2Icon className="animate-spin" /> : <SparklesIcon />} onClick={() => onGenerate({})} disabled={isGenerating || !sourceFile || !targetFile} className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 shadow-lg shadow-purple-500/30 hover:shadow-xl hover:shadow-purple-500/40 transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]">
+        {isGenerating ? 'Swapping...' : 'Swap Faces'}
+      </Button>
+    </div>;
+};
 export const ImageEditor = () => {
   const location = useLocation();
   const [selectedTool, setSelectedTool] = useState<string | null>(location.state?.selectedTool || 'image-generator');

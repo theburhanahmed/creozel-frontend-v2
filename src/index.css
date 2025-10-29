@@ -98,7 +98,14 @@
     transform: rotate(360deg);
   }
 }
-
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
 /* Enhanced Typing indicator animations */
 @keyframes typing-bounce-1 {
   0%, 100% { transform: translateY(0); }
@@ -266,6 +273,7 @@ body {
 *:focus-visible {
   outline: var(--focus-ring-width) solid rgb(var(--focus-ring-color));
   outline-offset: var(--focus-ring-offset);
+  border-radius: var(--radius-md);
 }
 
 /* Skip links for keyboard users */
@@ -318,6 +326,16 @@ body {
 }
 .animate-spin-slow {
   animation: spin-slow 10s linear infinite;
+}
+.animate-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(var(--muted), 0.2) 0%,
+    rgba(var(--muted), 0.4) 50%,
+    rgba(var(--muted), 0.2) 100%
+  );
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
 }
 
 /* Typing indicator animations */
